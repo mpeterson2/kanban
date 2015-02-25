@@ -1,8 +1,21 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+.toast-top-full-width {
+    padding-top: 50px;
 }
 
-a {
-  color: #00B7FF;
+.navbar {
+    background: #f5f5f5;
+    border-radius: 0px;
+}
+
+.panel.panel-small {
+  max-width: 50%;
+}
+
+.navbar-nav>li>a.image-text {
+  display: block;
+  padding: 5px 0px 0px 0px;
+}
+
+.navbar-nav>li>a {
+  cursor: pointer;
 }
