@@ -2,54 +2,63 @@
 <head>
   <title>Kanban</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel='stylesheet' href="stylesheets/style.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
 
   <script src="/bower_components/angular/angular.js"></script>
   <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="/bower_components/angular-gravatar/build/md5.js"></script>
-  <script src="/bower_components/angular-gravatar/build/angular-gravatar.js"></script>
 
-  <script src='javascripts/angularApp.js'></script>
-  <script src='javascripts/authentication.js'></script>
+  <script src="javascripts/angularApp.js"></script>
+  <script src="javascripts/authentication.js"></script>
+  <script src="javascripts/dashboard.js"></script>
+  <script src="javascripts/boards.js"></script>
 
 </head>
 
-<body ng-app='app' ng-controller="main">
+<body ng-app="app" ng-controller="main">
 
-  <div class='navbar navbar-default'>
-    <div class="container">
-      <div class="navbar-header">
-        <a class='navbar-brand' href='/#/'>Kanban</a>
+  <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Kanban</a>
+        </div>
+        <div class="navbar-collapse collapse">
+
+          <!-- Left nav -->
+          <ul class="nav navbar-nav">
+          </ul>
+
+          <!-- Right nav -->
+          <ul class="nav navbar-nav navbar-right">
+
+            <li ng-show="user.username">
+              <a href="/#/users/{{user._id}}">
+                <img src="https://gravatar.com/avatar/{{user.gravatar}}?size=20" class="avatar">
+                <span>{{user.username}}</span>
+              </a>
+            </li>
+
+            <li ng-show="user.username">
+              <a ng-click="logout()">Logout</a>
+            </li>
+
+            <li ng-hide="user.username">
+              <a href="/#/login">Login</a>
+            </li>
+
+          </ul>
+        </div>
       </div>
-
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-
-          <li ng-hide="user.username">
-            <a class="image-text" href="/#/login">
-              <img gravatar-src="user.email" gravatar-size="40">
-              <span>Login</span>
-            </a>
-          </li>
-
-          <li ng-show="user.username">
-            <a class="image-text" href="/#/users/{{user._id}}">
-              <img gravatar-src="user.email" gravatar-size="40">
-              <span>{{user.username}}</span>
-            </a>
-          </li>
-          <li ng-show="user.username">
-            <a ng-click="logout()">Signout</a>
-          </li>
-        </ul>
-      </div>
+    </nav>
 
 
-    </div>
-  </div>
-
-
-  <div class='container'>
+  <div class="container">
     <ui-view></ui-view>
   </div>
 

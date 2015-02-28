@@ -6,7 +6,7 @@ angular.module('authentication', [])
 
   $scope.login = function() {
     auth.login($scope.credentials).success(function() {
-      $location.path('/#/');
+      $location.path('/dashboard');
     });
   };
 
@@ -104,7 +104,6 @@ angular.module('authentication', [])
       promise.success(function(data) {
         o.error.val = false;
         angular.copy(data, o.user);
-        console.log(o.user);
       })
       .error(function(info) {
         o.error.val = true;

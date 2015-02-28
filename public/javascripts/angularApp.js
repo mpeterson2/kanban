@@ -1,22 +1,28 @@
 angular.module('app', [
   'ui.router',
-  'ui.gravatar',
-  'authentication'
+  'md5',
+  'authentication',
+  'dashboard',
+  'boards'
 ])
 
-.controller('main', ['$scope', '$location', 'auth', function($scope, $location, auth) {
+.controller('main', ['$scope', '$state', 'md5', 'auth', function($scope, $state, md5, auth) {
   $scope.user = auth.user;
   auth.getUser()
     .success(function(user) {
-      //$location.path('/#/');
+      $scope.user.gravatar = md5(user.email);
+
+      if($state.$current.name == 'home') {
+        $location.path('/dashboard');
+      }
     })
     .error(function(message) {
-      //$location.path('/#/login');
+      $state.go('home');
     });
 
     $scope.logout = function() {
       auth.logout().success(function() {
-        $location.path('/#/');
+        $location.path('/');
       });
     };
 }])
@@ -24,8 +30,12 @@ angular.module('app', [
 .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
+    .state('index', {
+      url: '/'
+    })
+
     .state('home', {
-      url: '/',
+      url: '/home',
       templateUrl: '/html/home.html'
     })
 
@@ -39,6 +49,12 @@ angular.module('app', [
       url: '/register',
       controller: 'AuthCtrl',
       templateUrl: '/html/register.html'
+    })
+
+    .state('dashboard', {
+      url: '/dashboard',
+      controller: 'DashboardCtrl',
+      templateUrl: '/html/dashboard.html',
     });
 
     $urlRouterProvider.otherwise('/');

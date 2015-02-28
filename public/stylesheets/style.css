@@ -1,10 +1,5 @@
-.toast-top-full-width {
-    padding-top: 50px;
-}
-
-.navbar {
-    background: #f5f5f5;
-    border-radius: 0px;
+.nav>li>a>img {
+  border-radius: 5px;
 }
 
 .panel.panel-small {
