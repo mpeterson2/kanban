@@ -3,14 +3,16 @@ angular.module('app', [
   'md5',
   'authentication',
   'dashboard',
-  'boards'
+  'boards',
+  'users'
 ])
 
-.controller('main', ['$scope', '$state', 'md5', 'auth', function($scope, $state, md5, auth) {
+.controller('main', ['$scope', '$state', 'auth', 'users', function($scope, $state, auth, users) {
   $scope.user = auth.user;
+
   auth.getUser()
     .success(function(user) {
-      $scope.user.gravatar = md5(user.email);
+      $scope.user.gravatar = users.getGravatar(user.email);
 
       if($state.$current.name == 'home') {
         $location.path('/dashboard');
@@ -22,7 +24,7 @@ angular.module('app', [
 
     $scope.logout = function() {
       auth.logout().success(function() {
-        $location.path('/');
+        $state.go('home');
       });
     };
 }])

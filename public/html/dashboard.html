@@ -1,1 +1,27 @@
-<h1 class="header">Boards</h1>
+<h1 class="header">
+  Boards
+  <small><a href="/#/boards/new">new</a></small>
+</h1>
+
+<div ng-repeat="board in boards" width="50px">
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <a href="/#/board/{{board._id}}">{{board.title}}</a>
+      </div>
+      <div class="panel-body">
+
+        <div>
+          {{board.description}}
+        </div>
+
+        <div>
+          <a ng-repeat="member in board.members" href="/#/users/{{member._id}}">
+            <img src="{{member.gravatar}}?size=20" title="{{member.firstName}}" class="avatar">
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

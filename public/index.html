@@ -2,6 +2,7 @@
 <head>
   <title>Kanban</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="stylesheets/style.css">
 
   <script src="/bower_components/angular/angular.js"></script>
@@ -12,6 +13,7 @@
   <script src="javascripts/authentication.js"></script>
   <script src="javascripts/dashboard.js"></script>
   <script src="javascripts/boards.js"></script>
+  <script src="javascripts/users.js"></script>
 
 </head>
 
@@ -26,7 +28,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Kanban</a>
+          <a class="navbar-brand" href="/#/dashboard">Kanban</a>
         </div>
         <div class="navbar-collapse collapse">
 
@@ -39,17 +41,17 @@
 
             <li ng-show="user.username">
               <a href="/#/users/{{user._id}}">
-                <img src="https://gravatar.com/avatar/{{user.gravatar}}?size=20" class="avatar">
+                <img src="{{user.gravatar}}?size=20" class="avatar">
                 <span>{{user.username}}</span>
               </a>
             </li>
 
-            <li ng-show="user.username">
-              <a ng-click="logout()">Logout</a>
+            <li ng-show="user.username" title="Log out">
+              <a ng-click="logout()"><span class="octicon octicon-sign-out"></span></a>
             </li>
 
-            <li ng-hide="user.username">
-              <a href="/#/login">Login</a>
+            <li ng-hide="user.username" title="Log in">
+              <a href="/#/login"><span class="octicon octicon-sign-in"></span></a>
             </li>
 
           </ul>

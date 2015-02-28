@@ -1,6 +1,13 @@
-angular.module('dashboard', ['boards', 'authentication'])
+angular.module('dashboard', ['boards', 'authentication', 'users'])
 
-.controller('DashboardCtrl', ['$scope', 'auth', 'boards', function($scope, auth, boards, userBoards) {
-  $scope.hi = "hi";
-  console.log(boards.get(0));
+.controller('DashboardCtrl', ['$scope', 'auth', 'boards', 'users', function($scope, auth, boards, users) {
+  $scope.boards = boards.all();
+
+  for(var i=0; i<$scope.boards.length; i++) {
+    for(var j=0; j<$scope.boards[i].members.length; j++) {
+      member = $scope.boards[i].members[j];
+      if(member.email)
+        member.gravatar = users.getGravatar(member.email);
+    }
+  }
 }]);

@@ -1,11 +1,12 @@
-angular.module('authentication', [])
+angular.module('authentication', ['users'])
 
-.controller('AuthCtrl', ['$scope', '$location', 'auth', function($scope, $location, auth) {
+.controller('AuthCtrl', ['$scope', '$location', 'auth', 'users', function($scope, $location, auth, users) {
   $scope.formError = auth.error;
   $scope.user = auth.user;
 
   $scope.login = function() {
     auth.login($scope.credentials).success(function() {
+      auth.user.gravatar = users.getGravatar(auth.user.email);
       $location.path('/dashboard');
     });
   };
