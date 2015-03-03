@@ -7,7 +7,7 @@
   <div class="col-md-4 col-sm-6 col-xs-12">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <a href="/#/board/{{board._id}}">{{board.title}}</a>
+        <a href="/#/board/{{board._id}}">{{board.name}}</a>
       </div>
       <div class="panel-body">
 
@@ -17,7 +17,7 @@
 
         <div>
           <a ng-repeat="member in board.members" href="/#/users/{{member._id}}">
-            <img ng-src="{{member.gravatar}}?size=20" title="{{member.firstName}}" class="avatar">
+            <img ng-src="{{member.gravatar}}?size=20" title="{{member.firstName + ' ' + member.lastName}}" class="avatar">
           </a>
         </div>
 

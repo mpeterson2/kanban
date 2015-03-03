@@ -78,6 +78,8 @@ angular.module('app', [
         'responseError': function(response) {
           if(response.status === 404)
             window.location = '/#/error/404';
+          else if(response.status === 401)
+            window.location = '/#/login';
 
           return response;
         }

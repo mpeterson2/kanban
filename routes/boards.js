@@ -7,15 +7,24 @@ var isAuthenticated = function(req, res, next) {
   if(req.isAuthenticated())
     next();
   else
-    res.status(404).json({error: 'Not Found'});
+    res.status(401).json({error: 'Unauthorized'});
 }
 
 router.get('/', isAuthenticated, function(req, res, next) {
-  Board.find(function(err, boards) {
+  Board.find().populate('members').exec(function(err, boards) {
+    res.json(boards);
+  });
+});
+
+router.post('/', isAuthenticated, function(req, res, next) {
+  var board = new Board(req.body);
+  board.members.push(req.user);
+
+  board.save(function(err, board) {
     if(err)
       return next(err);
 
-    res.json(boards)
+    res.json(board);
   });
 });
 
