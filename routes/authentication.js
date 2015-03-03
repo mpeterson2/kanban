@@ -4,11 +4,6 @@ var router = express.Router();
 
 module.exports = function(passport) {
 
-	router.get('/', function(req, res) {
-    	// Display the Login page with any flash message, if any
-		res.render('index', { message: req.flash('message') });
-	});
-
   router.post('/login', function(req, res, next) {
     passport.authenticate('login', function(err, user, info) {
       if (err) {
@@ -27,7 +22,7 @@ module.exports = function(passport) {
     })(req, res, next);
   });
 
-	router.post('/signup', function(req, res, next) {
+  router.post('/signup', function(req, res, next) {
     // Find user by username. If found, don't try to make a new one.
     User.findOne({username: req.body.username}, function(err, user) {
 
@@ -58,11 +53,11 @@ module.exports = function(passport) {
     });
   });
 
-	/* Handle Logout */
-	router.get('/signout', function(req, res) {
-		req.logout();
-		res.redirect('/');
-	});
+  /* Handle Logout */
+  router.get('/signout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+  });
 
   router.get('/me', function(req, res, next) {
     if(req.isAuthenticated())
@@ -71,10 +66,5 @@ module.exports = function(passport) {
     return res.status(401).json({error: 'Not signed on'})
   });
 
-	return router;
+  return router;
 }
-
-
-
-
-

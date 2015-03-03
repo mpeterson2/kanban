@@ -1,14 +1,28 @@
 angular.module('boards', [])
 
+.controller('BoardCtrl', ['$scope', function($scope){
+  $scope.createBoard = function() {
+    console.log($scope.board);
+  };
+
+}])
+
 .factory('boards', ['$http', function($http) {
   var o = {
+    boards: [],
 
     get: function(id) {
       return o.all()[id];
     },
 
     all: function(user) {
-      return [
+      return $http.get('/boards').success(function(data) {
+        angular.copy(data, o.boards);
+      })
+    },
+
+/*
+    boards: [
               {
                 title: 'Name',
                 _id: 123,
@@ -54,9 +68,8 @@ angular.module('boards', [])
                 date: 123,
                 description: 'This is a long description'
               }
-            ];
-    }
-
+            ]
+*/
   };
 
   return o;

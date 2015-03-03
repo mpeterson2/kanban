@@ -1,0 +1,22 @@
+<div class="panel panel-default panel-small center-block">
+  <div class="panel-heading">Create Board</div>
+  <div class="panel-body">
+    <form ng-submit="createBoard()" autocomplete="on">
+
+      <div class="form-group" ng-class="{'has-error': formError.name}">
+        <label class="control-label">Name:</label>
+        <input type="text" placeholder="Name of the board" ng-model="board.name" class="form-control">
+      </div>
+
+      <div class="form-group" ng-class="{'has-error': formError.description}">
+        <label class="control-label">Description:</label>
+        <textarea type="text" placeholder="Description of the board" ng-model="board.description" class="form-control"></textarea>
+      </div>
+
+      <div class="form-group has-error">
+        <label class="control-label" ng-show="formError.message">{{formError.message}}</label>
+        <input type="submit" value="Create" class="btn btn-primary pull-right">
+      </div>
+    </form>
+  </div>
+</div>

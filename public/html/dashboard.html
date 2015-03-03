@@ -1,6 +1,6 @@
 <h1 class="header">
   Boards
-  <small><a href="/#/boards/new">new</a></small>
+  <small><a href="/#/boards/create">new</a></small>
 </h1>
 
 <div ng-repeat="board in boards" width="50px">
@@ -17,7 +17,7 @@
 
         <div>
           <a ng-repeat="member in board.members" href="/#/users/{{member._id}}">
-            <img src="{{member.gravatar}}?size=20" title="{{member.firstName}}" class="avatar">
+            <img ng-src="{{member.gravatar}}?size=20" title="{{member.firstName}}" class="avatar">
           </a>
         </div>
 

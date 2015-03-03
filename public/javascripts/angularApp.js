@@ -14,12 +14,12 @@ angular.module('app', [
     .success(function(user) {
       $scope.user.gravatar = users.getGravatar(user.email);
 
-      if($state.$current.name == 'home') {
-        $location.path('/dashboard');
-      }
+      if($state.$current.name == 'index')
+        $state.go('dashboard');
     })
     .error(function(message) {
-      $state.go('home');
+      if($state.$current.name == 'index')
+        $state.go('home');
     });
 
     $scope.logout = function() {
@@ -29,7 +29,7 @@ angular.module('app', [
     };
 }])
 
-.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
   $stateProvider
 
     .state('index', {
@@ -57,7 +57,30 @@ angular.module('app', [
       url: '/dashboard',
       controller: 'DashboardCtrl',
       templateUrl: '/html/dashboard.html',
+    })
+
+    .state('board/create', {
+      url: '/boards/create',
+      controller: 'BoardCtrl',
+      templateUrl: '/html/board/new.html'
+    })
+
+    .state('404', {
+      url: '/error/404',
+      templateUrl: '/html/404.html'
     });
 
     $urlRouterProvider.otherwise('/');
+
+    // Global error handler
+    $httpProvider.interceptors.push(function() {
+      return {
+        'responseError': function(response) {
+          if(response.status === 404)
+            window.location = '/#/error/404';
+
+          return response;
+        }
+      };
+  });
 }]);
