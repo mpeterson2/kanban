@@ -2,6 +2,25 @@
   border-radius: 5px;
 }
 
+.navbar .octicon {
+  margin-top: 4px;
+}
+
+/* Normal navbar */
+@media (min-width: 768px) {
+  .icon-text {
+    display: none;
+  }
+}
+
+/* mobile navbar */
+@media (max-width: 767px) {
+  .icon-text {
+    display: inline;
+    margin-right: 10px;
+  }
+}
+
 .panel.panel-small {
   max-width: 50%;
 }

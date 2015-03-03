@@ -2,12 +2,14 @@
 <head>
   <title>Kanban</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="bower_components/octicons/octicons/octicons.css">
+  <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="stylesheets/style.css">
 
   <script src="/bower_components/angular/angular.js"></script>
   <script src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="/bower_components/angular-gravatar/build/md5.js"></script>
+  <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 
   <script src="javascripts/angularApp.js"></script>
   <script src="javascripts/authentication.js"></script>
@@ -31,7 +33,7 @@
           <a class="navbar-brand" href="/#/dashboard" ng-show="user.username">Kanban</a>
           <a class="navbar-brand" href="/#/home" ng-hide="user.username">Kanban</a>
         </div>
-        <div class="navbar-collapse collapse">
+        <div id="navbar" class="navbar-collapse collapse">
 
           <!-- Left nav -->
           <ul class="nav navbar-nav">
@@ -48,11 +50,15 @@
             </li>
 
             <li ng-show="user.username" title="Log out">
-              <a ng-click="logout()"><span class="octicon octicon-sign-out"></span></a>
+              <a ng-click="logout()">
+              <span class="icon-text">Log out</span>
+              <span class="octicon octicon-sign-out"></span></a>
             </li>
 
             <li ng-hide="user.username" title="Log in">
-              <a href="/#/login"><span class="octicon octicon-sign-in"></span></a>
+              <a href="/#/login">
+                <span class="icon-text">Log in</span>
+                <span class="octicon octicon-sign-in"></span></a>
             </li>
 
           </ul>
