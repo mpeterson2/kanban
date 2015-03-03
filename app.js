@@ -29,10 +29,16 @@ app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 // Configuring Passport
 var passport = require('passport');
 var expressSession = require('express-session');
-// TODO - Why Do we need this key ?
+
+// This will allow the server to save session data when the server restarts.
+var MongoStore = require('connect-mongo')(expressSession);
 app.use(expressSession({secret: 'mySecretKey',
                         saveUninitialized: false,
-                        resave: false}));
+                        resave: false,
+                        maxAge: new Date(Date.now() + 3600000),
+                        store: new MongoStore({mongooseConnection: mongoose.connection})
+                    }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
