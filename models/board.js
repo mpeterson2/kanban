@@ -5,5 +5,5 @@ module.exports = mongoose.model('Board', {
   description: String,
   members: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
   tasks:  [{type: mongoose.Schema.Types.ObjectId, ref: 'Task'}],
-  storys: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}],
+  stories: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}],
 });

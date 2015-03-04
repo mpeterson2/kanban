@@ -1,6 +1,11 @@
 angular.module('boards', [])
 
-.controller('BoardCtrl', ['$scope', '$state', 'boards', function($scope, $state, boards){
+.controller('BoardCtrl', ['$scope', '$state', '$stateParams', 'boards', function($scope, $state, $stateParams, boards){
+  $scope.board = boards.board;
+  if($stateParams.boardId) {
+    boards.get($stateParams.boardId);
+  }
+
   $scope.createBoard = function() {
     boards.create($scope.board).success(function(data) {
       $state.go('dashboard');
@@ -11,16 +16,20 @@ angular.module('boards', [])
 
 .factory('boards', ['$http', function($http) {
   var o = {
+    board: {},
     boards: [],
 
     get: function(id) {
-      return o.all()[id];
+      return $http.get('/boards/' + id).success(function(data) {
+        console.log(data);
+        angular.copy(data, o.board);
+      });
     },
 
     all: function(user) {
       return $http.get('/boards').success(function(data) {
         angular.copy(data, o.boards);
-      })
+      });
     },
 
     create: function(board) {

@@ -65,6 +65,12 @@ angular.module('app', [
       templateUrl: '/html/board/new.html'
     })
 
+    .state('board/view', {
+      url: '/boards/:boardId',
+      controller: 'BoardCtrl',
+      templateUrl: '/html/board/view.html'
+    })
+
     .state('404', {
       url: '/error/404',
       templateUrl: '/html/404.html'
