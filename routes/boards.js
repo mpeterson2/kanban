@@ -29,13 +29,17 @@ router.post('/', isAuthenticated, function(req, res, next) {
 });
 
 router.param('board', function(req, res, next, id) {
+  if(!req.user) {
+    notFound(res);
+  }
+
   Board.findById(id).populate('members').where('members').in([req.user._id])
     .exec(function(err, board) {
       if(err)
         return next(err);
 
       if(!board)
-        res.status(404).json({error: "Not Found"});
+        notFound(res);
 
       req.board = board;
       return next();
@@ -51,5 +55,9 @@ router.get('/:board', isAuthenticated, function(req, res, next) {
     res.json(req.board);
   })
 });
+
+notFound = function(res) {
+  res.status(404).json({error: "Not Found"});
+};
 
 module.exports = router;

@@ -3,7 +3,9 @@ angular.module('boards', [])
 .controller('BoardCtrl', ['$scope', '$state', '$stateParams', 'boards', function($scope, $state, $stateParams, boards){
   $scope.board = boards.board;
   if($stateParams.boardId) {
-    boards.get($stateParams.boardId);
+    boards.get($stateParams.boardId).error(function(error, status) {
+      $state.go('error/' + status);
+    });
   }
 
   $scope.createBoard = function() {

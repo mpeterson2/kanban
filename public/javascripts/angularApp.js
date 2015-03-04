@@ -13,18 +13,17 @@ angular.module('app', [
   auth.getUser()
     .success(function(user) {
       $scope.user.gravatar = users.getGravatar(user.email);
-
       if($state.$current.name == 'index')
-        $state.go('dashboard');
+        $state.go('dashboard', {}, {'location': 'replace'});
     })
     .error(function(message) {
       if($state.$current.name == 'index')
-        $state.go('home');
+        $state.go('home', {}, {'location': 'replace'});
     });
 
     $scope.logout = function() {
       auth.logout().success(function() {
-        $state.go('home');
+        $state.go('home', {}, {'location': 'replace'});
       });
     };
 }])
@@ -71,24 +70,10 @@ angular.module('app', [
       templateUrl: '/html/board/view.html'
     })
 
-    .state('404', {
+    .state('error/404', {
       url: '/error/404',
       templateUrl: '/html/404.html'
     });
 
     $urlRouterProvider.otherwise('/');
-
-    // Global error handler
-    $httpProvider.interceptors.push(function() {
-      return {
-        'responseError': function(response) {
-          if(response.status === 404)
-            window.location = '/#/error/404';
-          else if(response.status === 401)
-            window.location = '/#/login';
-
-          return response;
-        }
-      };
-  });
 }]);
