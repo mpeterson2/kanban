@@ -1,6 +1,6 @@
 angular.module('authentication', ['users'])
 
-.controller('AuthCtrl', ['$scope', '$location', 'auth', 'users', function($scope, $location, auth, users) {
+.controller('AuthCtrl', function($scope, $location, auth, users) {
   $scope.formError = auth.error;
   $scope.user = auth.user;
 
@@ -91,10 +91,10 @@ angular.module('authentication', ['users'])
     return regex.test(email);
   }
 
-}])
+})
 
 
-.factory('auth', ['$http', function($http) {
+.factory('auth', function($http) {
   var o = {
     user: {},
     error: new Boolean(false),
@@ -137,4 +137,4 @@ angular.module('authentication', ['users'])
   };
 
   return o;
-}]);
+});

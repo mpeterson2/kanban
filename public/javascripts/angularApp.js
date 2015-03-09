@@ -8,7 +8,7 @@ angular.module('app', [
   'users'
 ])
 
-.controller('main', ['$scope', '$state', 'auth', 'users', function($scope, $state, auth, users) {
+.controller('main', function($scope, $state, auth, users) {
   $scope.user = auth.user;
 
   auth.getUser()
@@ -27,9 +27,9 @@ angular.module('app', [
         $state.go('home', {}, {'location': 'replace'});
       });
     };
-}])
+})
 
-.config(['$stateProvider', '$urlRouterProvider', '$httpProvider', function($stateProvider, $urlRouterProvider, $httpProvider) {
+.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
   $stateProvider
 
     .state('index', {
@@ -77,4 +77,4 @@ angular.module('app', [
     });
 
     $urlRouterProvider.otherwise('/');
-}]);
+});

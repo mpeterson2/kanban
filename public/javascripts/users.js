@@ -1,8 +1,8 @@
 angular.module('users', ['md5', 'authentication'])
 
-.factory('users', ['md5', 'auth', function(md5, login) {
+.factory('users', function(md5, auth) {
   var o = {
-    currUser: login.user,
+    currUser: auth.user,
 
     getGravatar: function(email) {
       if(email)
@@ -11,4 +11,4 @@ angular.module('users', ['md5', 'authentication'])
   };
 
   return o;
-}])
+});

@@ -1,6 +1,6 @@
 angular.module('dashboard', ['boards', 'authentication', 'users'])
 
-.controller('DashboardCtrl', ['$scope', '$state', 'auth', 'boards', 'users', function($scope, $state, auth, boards, users) {
+.controller('DashboardCtrl', function($scope, $state, auth, boards, users) {
   $scope.boards = boards.boards;
 
   boards.all().success(function() {
@@ -16,4 +16,4 @@ angular.module('dashboard', ['boards', 'authentication', 'users'])
     $state.go('login');
   });
 
-}]);
+});
