@@ -49,13 +49,13 @@
               </a>
             </li>
 
-            <li ng-show="user.username" title="Log out">
+            <li ng-show="user.username" tooltip="Log out" tooltip-placement="bottom">
               <a ng-click="logout()">
               <span class="icon-text">Log out</span>
               <span class="octicon octicon-sign-out"></span></a>
             </li>
 
-            <li ng-hide="user.username" title="Log in">
+            <li ng-hide="user.username" tooltip="Log in" tooltip-placement="bottom">
               <a href="/#/login">
                 <span class="icon-text">Log in</span>
                 <span class="octicon octicon-sign-in"></span></a>
