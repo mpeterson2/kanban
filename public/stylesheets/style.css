@@ -33,3 +33,7 @@
 .navbar-nav>li>a {
   cursor: pointer;
 }
+
+.clickable {
+  cursor: pointer;
+}

@@ -1,6 +1,6 @@
-angular.module('boards', [])
+angular.module('boards', ['ui.bootstrap'])
 
-.controller('BoardCtrl', ['$scope', '$state', '$stateParams', 'boards', function($scope, $state, $stateParams, boards){
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards){
   $scope.board = boards.board;
   if($stateParams.boardId) {
     boards.get($stateParams.boardId).error(function(error, status) {
@@ -14,16 +14,25 @@ angular.module('boards', [])
     });
   };
 
-}])
+  $scope.addStory = function() {
+    boards.addStory($scope.story).success(function() {
+      $scope.story.description = "";
+    });
+  };
 
-.factory('boards', ['$http', function($http) {
+  $scope.showAddStory = function() {
+    //$modal.open();
+  };
+
+})
+
+.factory('boards', function($http, $stateParams) {
   var o = {
     board: {},
     boards: [],
 
     get: function(id) {
       return $http.get('/boards/' + id).success(function(data) {
-        console.log(data);
         angular.copy(data, o.board);
       });
     },
@@ -35,9 +44,16 @@ angular.module('boards', [])
     },
 
     create: function(board) {
-      return $http.post('/boards', board);
+      return $http.put('/boards', board);
+    },
+
+    addStory: function(story) {
+      return $http.put('/boards/' + $stateParams.boardId + '/story', story)
+        .success(function(data) {
+          o.board.stories.push(data);
+        });
     }
   };
 
   return o;
-}]);
+});

@@ -1,1 +1,42 @@
-<h1>Board</h1>
+<h1>{{board.name}}</h1>
+
+<tabset justified="true">
+  <tab heading="Stories">
+
+    <accordion close-others="false">
+      <accordion-group ng-repeat="story in board.stories" is-open="status.open">
+
+        <accordion-heading>
+          {{story.description}}
+          <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+        </accordion-heading>
+
+        Tasks go here...
+
+      </accordion-group>
+    </accordion>
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        Create Story
+      </div>
+      <div class="panel-body">
+
+        <form ng-submit="addStory()">
+          <div class="form-group">
+            <label>Description</label>
+            <textarea ng-model="story.description" class="form-control" placeholder="As a _____, I want the ability to _____, so I can _____."></textarea>
+          </div>
+          <input type="submit">
+        </form>
+      </div>
+    </div>
+
+    <button class="btn btn-primary pull-right" ng-click="showAddStory()">New Story</button>
+
+  </tab>
+
+  <tab heading="Board">
+
+  </tab>
+</tabset>

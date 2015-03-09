@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
+var Story = mongoose.model('Story');
 
 var isAuthenticated = function(req, res, next) {
   if(req.isAuthenticated())
@@ -16,7 +17,7 @@ router.get('/', isAuthenticated, function(req, res, next) {
   });
 });
 
-router.post('/', isAuthenticated, function(req, res, next) {
+router.put('/', isAuthenticated, function(req, res, next) {
   var board = new Board(req.body);
   board.members.push(req.user);
 
@@ -45,7 +46,7 @@ router.param('board', function(req, res, next, id) {
       return next();
     });
 
-})
+});
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
   req.board.populate(['tasks', 'stories'], function(err, board) {
@@ -54,6 +55,22 @@ router.get('/:board', isAuthenticated, function(req, res, next) {
 
     res.json(req.board);
   })
+});
+
+router.put("/:board/story/", isAuthenticated, function(req, res, next) {
+  var story = new Story(req.body);
+
+  story.members.push(req.user);
+  req.board.stories.push(story);
+
+  req.board.save();
+
+  story.save(function(err, story) {
+    if(err)
+      return next(err);
+
+    res.json(story);
+  });
 });
 
 notFound = function(res) {
