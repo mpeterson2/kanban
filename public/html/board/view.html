@@ -13,26 +13,12 @@
 
         Tasks go here...
 
+        <button class="btn btn-primary pull-right" ng-click="showAddTask(story)">Add Task</button>
+
       </accordion-group>
     </accordion>
 
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        Create Story
-      </div>
-      <div class="panel-body">
-
-        <form ng-submit="addStory()">
-          <div class="form-group">
-            <label>Description</label>
-            <textarea ng-model="story.description" class="form-control" placeholder="As a _____, I want the ability to _____, so I can _____."></textarea>
-          </div>
-          <input type="submit">
-        </form>
-      </div>
-    </div>
-
-    <button class="btn btn-primary pull-right" ng-click="showAddStory()">New Story</button>
+    <button class="btn btn-primary pull-right" ng-click="showAddStory()">Add Story</button>
 
   </tab>
 

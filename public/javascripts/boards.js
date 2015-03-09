@@ -16,14 +16,43 @@ angular.module('boards', ['ui.bootstrap'])
 
   $scope.addStory = function() {
     boards.addStory($scope.story).success(function() {
-      $scope.story.description = "";
+      $scope.story.description = '';
     });
   };
 
   $scope.showAddStory = function() {
-    //$modal.open();
+    $modal.open({
+      templateUrl: '/html/board/new-story.html',
+      controller: 'StoryModalCtrl'
+    });
   };
 
+  $scope.showAddTask = function(story) {
+    $modal.open({
+      templateUrl: '/html/board/new-task.html',
+      controller: 'TaskModalCtrl',
+      resolve: {
+        story: function() {return story;}
+      }
+    });
+  }
+
+})
+
+.controller('StoryModalCtrl', function($scope, $modalInstance, boards) {
+  $scope.addStory = function() {
+    boards.addStory($scope.story).success(function() {
+      $scope.story.description = '';
+      $modalInstance.close();
+    });
+  };
+})
+
+.controller('TaskModalCtrl', function($scope, $modalInstance, story, boards) {
+  console.log(story);
+  $scope.addTask = function() {
+    console.log($scope.task);
+  };
 })
 
 .factory('boards', function($http, $stateParams) {
