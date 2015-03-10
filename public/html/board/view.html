@@ -11,7 +11,7 @@
           <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
 
-        Tasks go here...
+        <div ng-repeat="task in story.tasks">{{task}}</div>
 
         <button class="btn btn-primary pull-right" ng-click="showAddTask(story)">Add Task</button>
 

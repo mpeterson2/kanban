@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
 var Story = mongoose.model('Story');
+var Task = mongoose.model('Task');
 
 var isAuthenticated = function(req, res, next) {
   if(req.isAuthenticated())
@@ -31,7 +32,7 @@ router.put('/', isAuthenticated, function(req, res, next) {
 
 router.param('board', function(req, res, next, id) {
   if(!req.user) {
-    notFound(res);
+    return notFound(res);
   }
 
   Board.findById(id).populate('members').where('members').in([req.user._id])
@@ -48,16 +49,35 @@ router.param('board', function(req, res, next, id) {
 
 });
 
-router.get('/:board', isAuthenticated, function(req, res, next) {
-  req.board.populate(['tasks', 'stories'], function(err, board) {
+router.param('story', function(req, res, next, id) {
+  if(!req.user)
+    return notFound(res);
+
+  Story.findById(id).populate('members').exec(function(err, story) {
     if(err)
       return next(err);
+
+    if(!story)
+      notFound(res);
+
+    req.story = story;
+    return next();
+  });
+});
+
+router.get('/:board', isAuthenticated, function(req, res, next) {
+  req.board.populate(['members', 'stories'], function(err, board) {
+    if(err)
+      return next(err);
+
+    console.log('story:');
+    console.log(board.stories[0]);
 
     res.json(req.board);
   })
 });
 
-router.put("/:board/story/", isAuthenticated, function(req, res, next) {
+router.put('/:board/story/', isAuthenticated, function(req, res, next) {
   var story = new Story(req.body);
 
   story.members.push(req.user);
@@ -73,8 +93,25 @@ router.put("/:board/story/", isAuthenticated, function(req, res, next) {
   });
 });
 
+router.put('/:board/story/:story/', isAuthenticated, function(req, res, next) {
+  var story = req.story;
+  var task = new Task(req. body);
+  task.members.push(req.user);
+
+  story.tasks.push(task);
+
+  story.save();
+
+  task.save(function(err, story) {
+    if(err)
+      return next(err);
+
+    res.json(story);
+  });
+});
+
 notFound = function(res) {
-  res.status(404).json({error: "Not Found"});
+  return res.status(404).json({error: "Not Found"});
 };
 
 module.exports = router;

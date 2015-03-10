@@ -42,7 +42,6 @@ angular.module('boards', ['ui.bootstrap'])
 .controller('StoryModalCtrl', function($scope, $modalInstance, boards) {
   $scope.addStory = function() {
     boards.addStory($scope.story).success(function() {
-      $scope.story.description = '';
       $modalInstance.close();
     });
   };
@@ -51,7 +50,10 @@ angular.module('boards', ['ui.bootstrap'])
 .controller('TaskModalCtrl', function($scope, $modalInstance, story, boards) {
   console.log(story);
   $scope.addTask = function() {
-    console.log($scope.task);
+    boards.addTask(story, $scope.task).success(function(data) {
+      //$modalInstance.close();
+      console.log(data);
+    })
   };
 })
 
@@ -80,6 +82,14 @@ angular.module('boards', ['ui.bootstrap'])
       return $http.put('/boards/' + $stateParams.boardId + '/story', story)
         .success(function(data) {
           o.board.stories.push(data);
+        });
+    },
+
+    addTask: function(story, task) {
+      return $http.put('/boards/' + $stateParams.boardId + '/story/' + story._id, task)
+        .success(function(data) {
+          story.tasks.push(data);
+          console.log(o.board);
         });
     }
   };
