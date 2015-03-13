@@ -1,6 +1,7 @@
 angular.module('app', [
   'ui.router',
   'ui.bootstrap',
+  'uiSwitch',
   'md5',
   'authentication',
   'dashboard',

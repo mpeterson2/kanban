@@ -5,8 +5,12 @@ angular.module('users', ['md5', 'authentication'])
     currUser: auth.user,
 
     getGravatar: function(email) {
-      if(email)
-        return "https://gravatar.com/avatar/" + md5(email)
+      if(typeof email == 'string')
+        return "https://gravatar.com/avatar/" + md5(email);
+
+      // Assume it's a user object
+      else
+        return "https://gravatar.com/avatar/" + md5(email.email);
     }
   };
 

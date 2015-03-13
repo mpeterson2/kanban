@@ -1,11 +1,19 @@
-angular.module('boards', ['ui.bootstrap'])
+angular.module('boards', ['ui.bootstrap', 'users'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards){
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards, users){
   $scope.board = boards.board;
   if($stateParams.boardId) {
-    boards.get($stateParams.boardId).error(function(error, status) {
-      $state.go('error/' + status);
-    });
+    boards.get($stateParams.boardId)
+      .success(function(data) {
+        var members = $scope.board.members;
+
+        $scope.board.members.forEach(function(member) {
+          member.gravatar = users.getGravatar(member);
+        });
+      })
+      .error(function(error, status) {
+        $state.go('error/' + status);
+      });
   }
 
   $scope.createBoard = function() {
@@ -35,7 +43,11 @@ angular.module('boards', ['ui.bootstrap'])
         story: function() {return story;}
       }
     });
-  }
+  };
+
+  $scope.toggleActive = function(story, task) {
+    boards.updateTask(story, task);
+  };
 
 })
 
@@ -48,11 +60,9 @@ angular.module('boards', ['ui.bootstrap'])
 })
 
 .controller('TaskModalCtrl', function($scope, $modalInstance, story, boards) {
-  console.log(story);
   $scope.addTask = function() {
     boards.addTask(story, $scope.task).success(function(data) {
-      //$modalInstance.close();
-      console.log(data);
+      $modalInstance.close();
     })
   };
 })
@@ -63,8 +73,12 @@ angular.module('boards', ['ui.bootstrap'])
     boards: [],
 
     get: function(id) {
-      return $http.get('/boards/' + id).success(function(data) {
-        angular.copy(data, o.board);
+      return $http.get('/boards/' + id).success(function(board) {
+        board.tasks = board.stories
+          .map(function(story) {return story.tasks})
+          .reduce(function(a, b) {return a.concat(b)});
+
+        angular.copy(board, o.board);
       });
     },
 
@@ -86,11 +100,14 @@ angular.module('boards', ['ui.bootstrap'])
     },
 
     addTask: function(story, task) {
-      return $http.put('/boards/' + $stateParams.boardId + '/story/' + story._id, task)
+      return $http.put('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task', task)
         .success(function(data) {
           story.tasks.push(data);
-          console.log(o.board);
         });
+    },
+
+    updateTask: function(story, task) {
+      return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task/' + task._id, task);
     }
   };
 

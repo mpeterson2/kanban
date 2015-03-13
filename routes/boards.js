@@ -66,12 +66,9 @@ router.param('story', function(req, res, next, id) {
 });
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
-  req.board.populate(['members', 'stories'], function(err, board) {
+  req.board.deepPopulate('members, stories, stories.tasks', function(err, board) {
     if(err)
       return next(err);
-
-    console.log('story:');
-    console.log(board.stories[0]);
 
     res.json(req.board);
   })
@@ -93,7 +90,7 @@ router.put('/:board/story/', isAuthenticated, function(req, res, next) {
   });
 });
 
-router.put('/:board/story/:story/', isAuthenticated, function(req, res, next) {
+router.put('/:board/story/:story/task', isAuthenticated, function(req, res, next) {
   var story = req.story;
   var task = new Task(req. body);
   task.members.push(req.user);
@@ -107,6 +104,15 @@ router.put('/:board/story/:story/', isAuthenticated, function(req, res, next) {
       return next(err);
 
     res.json(story);
+  });
+});
+
+router.post('/:board/story/:story/task/:task', isAuthenticated, function(req, res, next) {
+  Task.findByIdAndUpdate(req.params.task, req.body, function(err, task) {
+    if(err)
+      return next(err);
+
+    res.json(task);
   });
 });
 

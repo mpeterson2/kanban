@@ -4,6 +4,7 @@ module.exports = mongoose.model('Task', {
   description: String,
   points: Number,
   status: String,
+  isActive: {type: Boolean, default: false},
   story: {type: mongoose.Schema.Types.ObjectId, ref: 'Story'},
   members: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]
 });

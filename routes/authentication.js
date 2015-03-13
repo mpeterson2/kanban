@@ -63,7 +63,7 @@ module.exports = function(passport) {
     if(req.isAuthenticated())
       return res.json(req.user);
 
-    return res.status(401).json({error: 'Not signed on'})
+    return res.status(401).json({error: 'Not signed on'});
   });
 
   return router;

@@ -11,9 +11,28 @@
           <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
         </accordion-heading>
 
-        <div ng-repeat="task in story.tasks">{{task}}</div>
+        <div ng-repeat="task in story.tasks" class="top-buffer task">
+          <div>
+            {{task.description}}
+          </div>
 
-        <button class="btn btn-primary pull-right" ng-click="showAddTask(story)">Add Task</button>
+          <div class="pull-right">
+            <label>
+              <input type="checkbox" ng-model="task.isActive" ng-click="toggleActive(story, task)">
+              Show on board
+            </label>
+          </div>
+
+          <div>
+            <a ng-repeat="member in board.members" href="/#/users/{{member._id}}">
+            <img ng-src="{{member.gravatar}}?size=20" tooltip-placement="bottom" tooltip="{{member.firstName + ' ' + member.lastName}}" class="avatar">
+          </a>
+          </div>
+        </div>
+
+        <button class="btn btn-primary pull-right" ng-click="showAddTask(story)">
+          Add Task
+        </button>
 
       </accordion-group>
     </accordion>
@@ -21,8 +40,7 @@
     <button class="btn btn-primary pull-right" ng-click="showAddStory()">Add Story</button>
 
   </tab>
-
   <tab heading="Board">
-
+    <div ng-repeat="task in board.tasks | filter: {isActive: true}">{{task.description}}</div>
   </tab>
 </tabset>

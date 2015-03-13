@@ -20,6 +20,6 @@
     "bootstrap": "~3.3.2",
     "angular-ui-router": "~0.2.13",
     "octicons": "~2.2.0",
-    "angular-bootstrap": "~0.12.1"
+    "angular-bootstrap": "~0.12.1",
   }
 }

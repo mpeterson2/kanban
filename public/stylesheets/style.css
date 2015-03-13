@@ -37,3 +37,14 @@
 .clickable {
   cursor: pointer;
 }
+
+.top-buffer {
+  margin-bottom: 15px;
+}
+
+.task {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 4px;
+}
