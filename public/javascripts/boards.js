@@ -1,16 +1,9 @@
-angular.module('boards', ['ui.bootstrap', 'users'])
+angular.module('boards', ['ui.bootstrap'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards, users){
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards){
   $scope.board = boards.board;
   if($stateParams.boardId) {
     boards.get($stateParams.boardId)
-      .success(function(data) {
-        var members = $scope.board.members;
-
-        $scope.board.members.forEach(function(member) {
-          member.gravatar = users.getGravatar(member);
-        });
-      })
       .error(function(error, status) {
         $state.go('error/' + status);
       });

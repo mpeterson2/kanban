@@ -1,18 +1,9 @@
-angular.module('dashboard', ['boards', 'authentication', 'users'])
+angular.module('dashboard', ['boards', 'authentication'])
 
-.controller('DashboardCtrl', function($scope, $state, auth, boards, users) {
+.controller('DashboardCtrl', function($scope, $state, auth, boards) {
   $scope.boards = boards.boards;
 
-  boards.all().success(function() {
-    for(var i=0; i<$scope.boards.length; i++) {
-      for(var j=0; j<$scope.boards[i].members.length; j++) {
-        member = $scope.boards[i].members[j];
-        if(member.email)
-          member.gravatar = users.getGravatar(member.email);
-      }
-    }
-  })
-  .error(function() {
+  boards.all().error(function() {
     $state.go('login');
   });
 

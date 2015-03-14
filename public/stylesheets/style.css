@@ -1,5 +1,11 @@
 .avatar {
+  position: relative;
+  top: 10px;
   border-radius: 5px;
+}
+
+.navbar .avatar {
+  top: 17px;
 }
 
 .navbar .octicon {

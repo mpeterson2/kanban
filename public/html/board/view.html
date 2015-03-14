@@ -24,9 +24,8 @@
           </div>
 
           <div>
-            <a ng-repeat="member in board.members" href="/#/users/{{member._id}}">
-            <img ng-src="{{member.gravatar}}?size=20" tooltip-placement="bottom" tooltip="{{member.firstName + ' ' + member.lastName}}" class="avatar">
-          </a>
+            <avatar ng-repeat="member in board.members" user="{{member}}">
+            </avatar>
           </div>
         </div>
 

@@ -17,7 +17,7 @@
   <script src="javascripts/authentication.js"></script>
   <script src="javascripts/dashboard.js"></script>
   <script src="javascripts/boards.js"></script>
-  <script src="javascripts/users.js"></script>
+  <script src="javascripts/avatar.js"></script>
 
 </head>
 
@@ -45,10 +45,7 @@
           <ul class="nav navbar-nav navbar-right">
 
             <li ng-show="user.username">
-              <a href="/#/users/{{user._id}}">
-                <img ng-src="{{user.gravatar}}?size=20" class="avatar">
-                <span>{{user.username}}</span>
-              </a>
+              <avatar user="{{user}}"></avatar>
             </li>
 
             <li ng-show="user.username" tooltip="Log out" tooltip-placement="bottom">

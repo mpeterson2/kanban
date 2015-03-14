@@ -6,15 +6,14 @@ angular.module('app', [
   'authentication',
   'dashboard',
   'boards',
-  'users'
+  'avatar'
 ])
 
-.controller('main', function($scope, $state, auth, users) {
+.controller('main', function($scope, $state, auth) {
   $scope.user = auth.user;
 
   auth.getUser()
     .success(function(user) {
-      $scope.user.gravatar = users.getGravatar(user.email);
       if($state.$current.name == 'index')
         $state.go('dashboard', {}, {'location': 'replace'});
     })
