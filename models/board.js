@@ -5,8 +5,11 @@ var boardSchema = mongoose.Schema({
   name: String,
   description: String,
   members: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
-  tasks:  [{type: mongoose.Schema.Types.ObjectId, ref: 'Task'}],
-  stories: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}],
+
+  todo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}],
+  develop: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}],
+  test: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}],
+  done: [{type: mongoose.Schema.Types.ObjectId, ref: 'Story'}]
 });
 
 boardSchema.plugin(deepPopulate)

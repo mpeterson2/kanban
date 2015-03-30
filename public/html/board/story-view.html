@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{story.description}}</h4>
+</div>
+
+<div class="modal-body">
+  <div ng-repeat="task in story.tasks">
+    <input type="checkbox" ng-model="task.done" ng-click="toggleDone(task)">
+    <span>{{task.description}}</span>
+  </div>
+
+  <div>
+    <input type="text" placeholder="New task" ng-model="newTask.description">
+    <button class="btn btn-success" ng-click="addTask()">Add</button>
+  </div>
+
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="$close()">Close</button>
+</div>

@@ -15,49 +15,45 @@ angular.module('boards', ['ui.bootstrap'])
     });
   };
 
-  $scope.addStory = function() {
-    boards.addStory($scope.story).success(function() {
-      $scope.story.description = '';
-    });
-  };
-
   $scope.showAddStory = function() {
     $modal.open({
-      templateUrl: '/html/board/new-story.html',
-      controller: 'StoryModalCtrl'
-    });
-  };
-
-  $scope.showAddTask = function(story) {
-    $modal.open({
-      templateUrl: '/html/board/new-task.html',
-      controller: 'TaskModalCtrl',
+      templateUrl: '/html/board/story-new.html',
+      controller: 'StoryModalCtrl',
       resolve: {
-        story: function() {return story;}
+        story: function() { return null; }
       }
     });
   };
 
-  $scope.toggleActive = function(story, task) {
+  $scope.showStory = function(story) {
+    $modal.open({
+      templateUrl: '/html/board/story-view.html',
+      controller: 'StoryModalCtrl',
+      resolve: {
+        story: function() { return story; }
+      }
+    });
+  };
+
+  $scope.doneCount = function(story) {
+    return story.tasks.filter(function(t) {return t.done}).length;
+  };
+
+})
+
+.controller('StoryModalCtrl', function($scope, $modalInstance, boards, story) {
+  $scope.story = story;
+
+  $scope.addTask = function() {
+    boards.addTask(story, $scope.newTask).success(function() {
+      $scope.newTask = {};
+    });
+  };
+
+  $scope.toggleDone = function(task) {
     boards.updateTask(story, task);
   };
 
-})
-
-.controller('StoryModalCtrl', function($scope, $modalInstance, boards) {
-  $scope.addStory = function() {
-    boards.addStory($scope.story).success(function() {
-      $modalInstance.close();
-    });
-  };
-})
-
-.controller('TaskModalCtrl', function($scope, $modalInstance, story, boards) {
-  $scope.addTask = function() {
-    boards.addTask(story, $scope.task).success(function(data) {
-      $modalInstance.close();
-    })
-  };
 })
 
 .factory('boards', function($http, $stateParams) {
@@ -67,10 +63,6 @@ angular.module('boards', ['ui.bootstrap'])
 
     get: function(id) {
       return $http.get('/boards/' + id).success(function(board) {
-        board.tasks = board.stories
-          .map(function(story) {return story.tasks})
-          .reduce(function(a, b) {return a.concat(b)});
-
         angular.copy(board, o.board);
       });
     },

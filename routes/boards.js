@@ -66,7 +66,7 @@ router.param('story', function(req, res, next, id) {
 });
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
-  req.board.deepPopulate('members, stories, stories.tasks', function(err, board) {
+  req.board.deepPopulate('members, todo, todo.tasks', function(err, board) {
     if(err)
       return next(err);
 
@@ -93,10 +93,8 @@ router.put('/:board/story/', isAuthenticated, function(req, res, next) {
 router.put('/:board/story/:story/task', isAuthenticated, function(req, res, next) {
   var story = req.story;
   var task = new Task(req. body);
-  task.members.push(req.user);
 
   story.tasks.push(task);
-
   story.save();
 
   task.save(function(err, story) {

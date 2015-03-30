@@ -1,45 +1,41 @@
 <h1>{{board.name}}</h1>
 
-<tabset justified="true">
-  <tab heading="Stories">
+<div class="card-list">
+  <h2 class="text-center">Todo</h2>
+  <div ng-repeat="story in board.todo" ng-click="showStory(story)" class="story-card">
+    <div>{{story.description}}</div>
+    <div class="pull-right badge" ng-class="{'badge-success': doneCount(story) == story.tasks.length, 'badge-warning': doneCount(story) != story.tasks.length}">
+      {{doneCount(story)}}/{{story.tasks.length}}
+    </div>
+  </div>
 
-    <accordion close-others="false">
-      <accordion-group ng-repeat="story in board.stories" is-open="status.open">
+  <button class="btn btn-success pull-right less-right" ng-click="showAddStory()">Add story</button>
+</div>
 
-        <accordion-heading>
-          {{story.description}}
-          <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-        </accordion-heading>
+<div class="card-list">
+  <h2 class="text-center">Develop</h2>
+  <div ng-repeat="story in board.develop" ng-click="showStory(story)" class="story-card">
+    <span>
+      <div>{{story.description}}</div>
+      <div class="pull-right">{{doneCount(story)}}/{{story.tasks.length}}</div>
+    </span>
+  </div>
+</div>
 
-        <div ng-repeat="task in story.tasks" class="top-buffer task">
-          <div>
-            {{task.description}}
-          </div>
+<div class="card-list">
+  <h2 class="text-center">Test</h2>
+  <div ng-repeat="story in board.test" ng-click="showStory(story)" class="story-card">
+    <div>{{story.description}}</div>
+    <div class="pull-right">{{doneCount(story)}}/{{story.tasks.length}}</div>
+  </div>
+</div>
 
-          <div class="pull-right">
-            <label>
-              <input type="checkbox" ng-model="task.isActive" ng-click="toggleActive(story, task)">
-              Show on board
-            </label>
-          </div>
-
-          <div>
-            <avatar ng-repeat="member in board.members" user="{{member}}">
-            </avatar>
-          </div>
-        </div>
-
-        <button class="btn btn-primary pull-right" ng-click="showAddTask(story)">
-          Add Task
-        </button>
-
-      </accordion-group>
-    </accordion>
-
-    <button class="btn btn-primary pull-right" ng-click="showAddStory()">Add Story</button>
-
-  </tab>
-  <tab heading="Board">
-    <div ng-repeat="task in board.tasks | filter: {isActive: true}">{{task.description}}</div>
-  </tab>
-</tabset>
+<div class="card-list">
+  <h2 class="text-center">Done</h2>
+  <div ng-repeat="story in board.done" ng-click="showStory(story)" class="story-card">
+    <span class="clickable">
+      <div>{{story.description}}</div>
+      <div class="pull-right">{{doneCount(story)}}/{{story.tasks.length}}</div>
+    </span>
+  </div>
+</div>
