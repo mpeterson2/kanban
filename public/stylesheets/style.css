@@ -58,11 +58,14 @@ body {
   padding: 10px 10px 30px 10px;
   margin: 10px;
   border-radius: 10px;
-  cursor: pointer;
 }
 
-.story-card:hover {
+.story-card:hover:not(.fake) {
   background-color: #dfdfdf;
+}
+
+.story-card:not(.fake) {
+  cursor: pointer;
 }
 
 .badge-success {

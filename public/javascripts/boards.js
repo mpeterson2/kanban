@@ -64,6 +64,16 @@ angular.module('boards', ['ui.bootstrap'])
     get: function(id) {
       return $http.get('/boards/' + id).success(function(board) {
         angular.copy(board, o.board);
+
+        var todo = o.board.todo;
+        var develop = board.develop;
+        var test = board.test;
+        var done = board.done;
+        todo.title = "Todo";
+        develop.title = "Develop";
+        test.title = "Test";
+        done.title = "Done";
+        o.board.lists = [todo, develop, test, done];
       });
     },
 
