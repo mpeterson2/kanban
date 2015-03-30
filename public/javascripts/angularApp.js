@@ -6,7 +6,8 @@ angular.module('app', [
   'authentication',
   'dashboard',
   'boards',
-  'avatar'
+  'avatar',
+  'loading'
 ])
 
 .controller('main', function($scope, $state, auth) {
@@ -29,9 +30,9 @@ angular.module('app', [
     };
 })
 
-.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
-  $stateProvider
+.config(function($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
 
+  $stateProvider
     .state('index', {
       url: '/'
     })
@@ -76,5 +77,5 @@ angular.module('app', [
       templateUrl: '/html/404.html'
     });
 
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('home');
 });
