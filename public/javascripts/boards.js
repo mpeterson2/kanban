@@ -80,7 +80,7 @@ angular.module('boards', ['ui.bootstrap'])
         var develop = board.develop;
         var test = board.test;
         var done = board.done;
-        todo.title = "Todo";
+        todo.title = "ToDo";
         develop.title = "Develop";
         test.title = "Test";
         done.title = "Done";
