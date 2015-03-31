@@ -54,6 +54,11 @@ angular.module('boards', ['ui.bootstrap'])
     boards.updateTask(story, task);
   };
 
+  $scope.addStory = function() {
+    boards.addStory($scope.story).success(function() {
+      $modalInstance.close();
+    });
+  }
 })
 
 .factory('boards', function($http, $stateParams) {
@@ -90,7 +95,7 @@ angular.module('boards', ['ui.bootstrap'])
     addStory: function(story) {
       return $http.put('/boards/' + $stateParams.boardId + '/story', story)
         .success(function(data) {
-          o.board.stories.push(data);
+          o.board.todo.push(data);
         });
     },
 

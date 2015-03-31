@@ -78,7 +78,7 @@ router.put('/:board/story/', isAuthenticated, function(req, res, next) {
   var story = new Story(req.body);
 
   story.members.push(req.user);
-  req.board.stories.push(story);
+  req.board.todo.push(story);
 
   req.board.save();
 

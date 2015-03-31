@@ -5,13 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var dbConfig = require('./db');
+var config = require('./config');
 var mongoose = require('mongoose');
 require('./models/board.js');
 require('./models/story.js');
 require('./models/task.js');
 // Connect to DB
-mongoose.connect(dbConfig.url);
+mongoose.connect(config.db.url);
 
 var app = express();
 
