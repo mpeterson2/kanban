@@ -75,3 +75,7 @@ body {
 .badge-warning {
   background-color: #f0ad4e;
 }
+
+.badge-error {
+  background-color: red;
+}

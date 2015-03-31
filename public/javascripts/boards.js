@@ -17,7 +17,7 @@ angular.module('boards', ['ui.bootstrap'])
 
   $scope.showAddStory = function() {
     $modal.open({
-      templateUrl: '/html/board/story-new.html',
+      templateUrl: '/html/story/new.html',
       controller: 'StoryModalCtrl',
       resolve: {
         story: function() { return undefined; }
@@ -27,7 +27,7 @@ angular.module('boards', ['ui.bootstrap'])
 
   $scope.showStory = function(story) {
     $modal.open({
-      templateUrl: '/html/board/story-view.html',
+      templateUrl: '/html/story/view.html',
       controller: 'StoryModalCtrl',
       resolve: {
         story: function() { return story; }
