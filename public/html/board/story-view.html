@@ -9,8 +9,10 @@
   </div>
 
   <div>
+    <form ng-submit="addTask()">
     <input type="text" placeholder="New task" ng-model="newTask.description">
-    <button class="btn btn-success" ng-click="addTask()">Add</button>
+    <input type="submit" class="btn btn-success" value="Add">
+    </form>
   </div>
 
 </div>

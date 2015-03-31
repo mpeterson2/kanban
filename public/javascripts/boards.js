@@ -20,7 +20,7 @@ angular.module('boards', ['ui.bootstrap'])
       templateUrl: '/html/board/story-new.html',
       controller: 'StoryModalCtrl',
       resolve: {
-        story: function() { return null; }
+        story: function() { return undefined; }
       }
     });
   };
@@ -45,6 +45,9 @@ angular.module('boards', ['ui.bootstrap'])
   $scope.story = story;
 
   $scope.addTask = function() {
+    if(!$scope.newTask || !$scope.newTask.description)
+      return;
+
     boards.addTask(story, $scope.newTask).success(function() {
       $scope.newTask = {};
     });
@@ -55,6 +58,9 @@ angular.module('boards', ['ui.bootstrap'])
   };
 
   $scope.addStory = function() {
+    if(!$scope.story || !$scope.story.description)
+      return;
+
     boards.addStory($scope.story).success(function() {
       $modalInstance.close();
     });

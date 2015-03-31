@@ -1,12 +1,12 @@
 angular.module('authentication', [])
 
-.controller('AuthCtrl', function($scope, $location, auth) {
+.controller('AuthCtrl', function($scope, $state, auth) {
   $scope.formError = auth.error;
   $scope.user = auth.user;
 
   $scope.login = function() {
     auth.login($scope.credentials).success(function() {
-      $location.path('/dashboard');
+      $state.go('dashboard');
     });
   };
 
@@ -32,7 +32,7 @@ angular.module('authentication', [])
 
     auth.register(u)
       .success(function(data) {
-        $location.path('/#/');
+        $state.go('login');
       })
       .error(function(error) {
         err[error.field] = true;
