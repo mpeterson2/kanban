@@ -12,7 +12,7 @@
       <div>{{story.description}}</div>
       <div class="pull-right badge"
         ng-class="{'badge-success': doneCount(story) == story.tasks.length,
-        'badge-error': doneCount(story) == 0,
+        'badge-error': doneCount(story) == 0 && story.tasks.length != 0,
         'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}">
 
         {{doneCount(story)}}/{{story.tasks.length}}
