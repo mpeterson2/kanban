@@ -66,7 +66,7 @@ router.param('story', function(req, res, next, id) {
 });
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
-  req.board.deepPopulate('members, todo, todo.tasks', function(err, board) {
+  req.board.deepPopulate('members, todo, todo.tasks, develop, develop.tasks, test, test.tasks, done, done.tasks', function(err, board) {
     if(err)
       return next(err);
 
@@ -92,7 +92,7 @@ router.put('/:board/story/', isAuthenticated, function(req, res, next) {
 
 router.put('/:board/story/:story/task', isAuthenticated, function(req, res, next) {
   var story = req.story;
-  var task = new Task(req. body);
+  var task = new Task(req.body);
 
   story.tasks.push(task);
   story.save();
@@ -113,6 +113,19 @@ router.post('/:board/story/:story/task/:task', isAuthenticated, function(req, re
     res.json(task);
   });
 });
+
+router.post('/:board/story/:story/move', isAuthenticated, function(req, res, next) {
+  var from = req.body.from.toLowerCase();
+  var to = req.body.to.toLowerCase();
+  var story = req.story;
+  var board = req.board;
+
+  board[from].pull(story._id);
+  board[to].push(story._id);
+  board.save();
+
+  res.json({});
+})
 
 notFound = function(res) {
   return res.status(404).json({error: "Not Found"});

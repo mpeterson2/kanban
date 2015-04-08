@@ -1,7 +1,8 @@
-angular.module('boards', ['ui.bootstrap'])
+angular.module('boards', ['ui.bootstrap', 'ngDragDrop'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards){
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards){
   $scope.board = boards.board;
+
   if($stateParams.boardId) {
     boards.get($stateParams.boardId)
       .error(function(error, status) {
@@ -23,6 +24,37 @@ angular.module('boards', ['ui.bootstrap'])
         story: function() { return undefined; }
       }
     });
+  };
+
+  $scope.beforeDrop = function(ev, ui, list) {
+    var s = '/boards/list/move';
+    var s2 = {
+      from: $scope.draggedList.title,
+      to: list.title,
+      id: $scope.draggedStory._id
+    }
+
+    return $q(function(resolve, error) {
+      var boardId = $scope.board._id;
+      var from = $scope.draggedList.title;
+      var to = list.title;
+      var storyId = $scope.draggedStory._id;
+
+      boards.moveStory(boardId, from, to, storyId)
+        .success(function() {
+          $scope.draggedList.splice($scope.draggedIndex, 1);
+          resolve(true);
+        })
+        .error(function() {
+          error(false);
+        });
+    });
+  };
+
+  $scope.onDragStart = function(ev, ui, list, story, index) {
+    $scope.draggedList = list;
+    $scope.draggedIndex = index;
+    $scope.draggedStory = story;
   };
 
   $scope.showStory = function(story) {
@@ -114,6 +146,10 @@ angular.module('boards', ['ui.bootstrap'])
 
     updateTask: function(story, task) {
       return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task/' + task._id, task);
+    },
+
+    moveStory: function(boardId, from, to, storyId) {
+      return $http.post('/boards/' + boardId + '/story/' + storyId + '/move', {from: from, to: to});
     }
   };
 

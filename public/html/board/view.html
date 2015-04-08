@@ -2,23 +2,31 @@
 
 <div ng-repeat="list in board.lists">
   <div class="card-list">
-    <h2 class="text-center">{{list.title}}</h2>
+    <div drop="true" ng-model="list" jqyoui-droppable="{beforeDrop: 'beforeDrop(list)'}">
 
-    <div ng-hide="list.length > 0" class="story-card fake">
-      No stories
-    </div>
+      <h2 class="text-center">
+        {{list.title}}
+        <small>
+          <a ng-click="showAddStory()" class="clickable" ng-if="list.title == 'ToDo'">New</a>
+        </small>
+      </h2>
 
-    <div ng-repeat="story in list" ng-click="showStory(story)" class="story-card">
-      <div>{{story.description}}</div>
-      <div class="pull-right badge"
-        ng-class="{'badge-success': doneCount(story) == story.tasks.length,
-        'badge-error': doneCount(story) == 0 && story.tasks.length != 0,
-        'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}">
+      <div ng-hide="list.length > 0" class="story-card fake">
+        No stories
+      </div>
 
-        {{doneCount(story)}}/{{story.tasks.length}}
+      <div ng-repeat="story in list" ng-click="showStory(story)" ng-trackby>
+        <div drag="true" class="story-card" jqyoui-draggable="{onStart:'onDragStart(list, story, $index)'}" jqyoui-options="{revert: 'invalid'}" ng-model="story">
+          <div>{{story.description}}</div>
+          <div class="pull-right badge"
+            ng-class="{'badge-success': doneCount(story) == story.tasks.length,
+            'badge-error': doneCount(story) == 0 && story.tasks.length != 0,
+            'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}">
+
+            {{doneCount(story)}}/{{story.tasks.length}}
+          </div>
+        </div>
       </div>
     </div>
-
-    <button class="btn btn-success pull-right less-right" ng-click="showAddStory()" ng-if="list.title == 'ToDo'">Add story</button>
   </div>
 </div>

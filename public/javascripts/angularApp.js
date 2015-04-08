@@ -3,6 +3,7 @@ angular.module('app', [
   'ui.bootstrap',
   'uiSwitch',
   'md5',
+  'ngDragDrop',
   'authentication',
   'dashboard',
   'boards',
