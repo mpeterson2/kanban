@@ -49,12 +49,10 @@ body {
 }
 
 .card-list {
+  display: block;
+  height: calc(100% - 140px);
   width: 25%;
   float: left;
-}
-
-.card-list .ui-droppable {
-  height: 100%;
 }
 
 .story-card {
