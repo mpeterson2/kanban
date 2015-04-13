@@ -117,11 +117,12 @@ router.post('/:board/story/:story/task/:task', isAuthenticated, function(req, re
 router.post('/:board/story/:story/move', isAuthenticated, function(req, res, next) {
   var from = req.body.from.toLowerCase();
   var to = req.body.to.toLowerCase();
+  var index = req.body.index;
   var story = req.story;
   var board = req.board;
 
   board[from].pull(story._id);
-  board[to].push(story._id);
+  board[to].splice(index, 0, story._id);
   board.save();
 
   res.json({});

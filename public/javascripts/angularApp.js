@@ -1,9 +1,8 @@
 angular.module('app', [
   'ui.router',
   'ui.bootstrap',
-  'uiSwitch',
+  'ui.sortable',
   'md5',
-  'ngDragDrop',
   'authentication',
   'dashboard',
   'boards',

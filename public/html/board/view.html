@@ -2,21 +2,16 @@
 
 <div ng-repeat="list in board.lists">
   <div class="card-list">
-    <div drop="true" ng-model="list" jqyoui-droppable="{beforeDrop: 'beforeDrop(list)'}">
+    <h2 class="text-center">
+      {{list.title}}
+      <small>
+        <a ng-click="showAddStory()" class="clickable" ng-if="list.title == 'ToDo'">New</a>
+      </small>
+    </h2>
 
-      <h2 class="text-center">
-        {{list.title}}
-        <small>
-          <a ng-click="showAddStory()" class="clickable" ng-if="list.title == 'ToDo'">New</a>
-        </small>
-      </h2>
-
-      <div ng-hide="list.length > 0" class="story-card fake">
-        No stories
-      </div>
-
-      <div ng-repeat="story in list" ng-click="showStory(story)" ng-trackby>
-        <div drag="true" class="story-card" jqyoui-draggable="{onStart:'onDragStart(list, story, $index)'}" jqyoui-options="{revert: 'invalid'}" ng-model="story">
+    <ul ui-sortable="sortableOptions" class="sortable" ng-model="list" id="list-{{list.title}}">
+      <div ng-repeat="story in list">
+        <li class="story-card item" ng-click="showStory(story)" model="story">
           <div>{{story.description}}</div>
           <div class="pull-right badge"
             ng-class="{'badge-success': doneCount(story) == story.tasks.length,
@@ -25,8 +20,8 @@
 
             {{doneCount(story)}}/{{story.tasks.length}}
           </div>
-        </div>
+        </li>
       </div>
-    </div>
+    </ul>
   </div>
 </div>

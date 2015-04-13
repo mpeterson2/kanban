@@ -21,6 +21,6 @@
     "angular-ui-router": "~0.2.13",
     "octicons": "~2.2.0",
     "angular-bootstrap": "~0.12.1",
-    "angular-dragdrop": "~1.0.11"
+    "angular-ui-sortable": "~0.13.3"
   }
 }

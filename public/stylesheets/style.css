@@ -55,19 +55,21 @@ body {
   float: left;
 }
 
-.story-card {
+.sortable {
+  height: calc(100% - 63px);
+}
+
+.story-card, .story-card-placeholder {
   background-color: #f5f5f5;
   padding: 10px 10px 30px 10px;
   margin: 10px;
   border-radius: 10px;
-}
-
-.story-card:hover:not(.fake) {
-  background-color: #dfdfdf;
-}
-
-.story-card:not(.fake) {
+  list-style: none;
   cursor: pointer;
+}
+
+.story-card:hover {
+  background-color: #dfdfdf;
 }
 
 .badge-success {

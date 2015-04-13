@@ -1,4 +1,4 @@
-angular.module('boards', ['ui.bootstrap', 'ngDragDrop'])
+angular.module('boards', ['ui.bootstrap'])
 
 .controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards){
   $scope.board = boards.board;
@@ -9,6 +9,20 @@ angular.module('boards', ['ui.bootstrap', 'ngDragDrop'])
         $state.go('error/' + status);
       });
   }
+
+  $scope.sortableOptions = {
+    connectWith: '.sortable',
+    placeholder: 'story-card-placeholder',
+    scroll: true,
+    beforeStop: function(e, ui) {
+      var story = ui.item.scope().story;
+      var fromList = ui.item.scope().$parent.list.title;
+      var toList = ui.item.parent().scope().list.title;
+      var index = ui.item.index();
+
+      return boards.moveStory($scope.board._id, fromList, toList, index, story._id);
+    }
+  };
 
   $scope.createBoard = function() {
     boards.create($scope.board).success(function(data) {
@@ -24,37 +38,6 @@ angular.module('boards', ['ui.bootstrap', 'ngDragDrop'])
         story: function() { return undefined; }
       }
     });
-  };
-
-  $scope.beforeDrop = function(ev, ui, list) {
-    var s = '/boards/list/move';
-    var s2 = {
-      from: $scope.draggedList.title,
-      to: list.title,
-      id: $scope.draggedStory._id
-    }
-
-    return $q(function(resolve, error) {
-      var boardId = $scope.board._id;
-      var from = $scope.draggedList.title;
-      var to = list.title;
-      var storyId = $scope.draggedStory._id;
-
-      boards.moveStory(boardId, from, to, storyId)
-        .success(function() {
-          $scope.draggedList.splice($scope.draggedIndex, 1);
-          resolve(true);
-        })
-        .error(function() {
-          error(false);
-        });
-    });
-  };
-
-  $scope.onDragStart = function(ev, ui, list, story, index) {
-    $scope.draggedList = list;
-    $scope.draggedIndex = index;
-    $scope.draggedStory = story;
   };
 
   $scope.showStory = function(story) {
@@ -148,8 +131,8 @@ angular.module('boards', ['ui.bootstrap', 'ngDragDrop'])
       return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task/' + task._id, task);
     },
 
-    moveStory: function(boardId, from, to, storyId) {
-      return $http.post('/boards/' + boardId + '/story/' + storyId + '/move', {from: from, to: to});
+    moveStory: function(boardId, from, to, index, storyId) {
+      return $http.post('/boards/' + boardId + '/story/' + storyId + '/move', {from: from, to: to, index: index});
     }
   };
 
