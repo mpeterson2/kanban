@@ -1,4 +1,4 @@
-angular.module('avatar', ['md5', 'authentication'])
+angular.module('avatar', ['angular-md5', 'authentication'])
 
 .directive('avatar', function(md5) {
   function link(scope, element, attrs) {
@@ -11,7 +11,7 @@ angular.module('avatar', ['md5', 'authentication'])
       var user = scope.$eval(newVal);
       if(user && user.email) {
         scope.user = user;
-        scope.user.gravatar = 'https://gravatar.com/avatar/' + md5(user.email);
+        scope.user.gravatar = 'https://gravatar.com/avatar/' + md5.createHash(user.email);
       }
     });
   };

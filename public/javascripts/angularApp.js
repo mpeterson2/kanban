@@ -2,7 +2,7 @@ angular.module('app', [
   'ui.router',
   'ui.bootstrap',
   'ui.sortable',
-  'md5',
+  'angular-md5',
   'authentication',
   'dashboard',
   'boards',
