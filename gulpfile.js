@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var nodemon = require('gulp-nodemon');
 var childProcess = require('child_process');
 var less = require('gulp-less');
+var minifyCSS = require('gulp-minify-css');
 var path = require('path');
 
 
@@ -23,8 +24,7 @@ gulp.task('less', function() {
   gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
 
   return gulp.src('./public/stylesheets/less/**/*.less')
-    .pipe(less({
-      paths: [ path.join(__dirname, 'less', 'includes') ]
-    }))
+    .pipe(less())
+    .pipe(minifyCSS())
     .pipe(gulp.dest('./public/stylesheets'));
 });
