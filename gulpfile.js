@@ -24,7 +24,13 @@ gulp.task('less', function() {
   gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
 
   return gulp.src('./public/stylesheets/less/style.less')
-    .pipe(less())
+    .pipe(less().on('error', swallowError))
     .pipe(minifyCSS())
-    .pipe(gulp.dest('./public/stylesheets'));
+    .pipe(gulp.dest('./public/stylesheets'))
+    .on('error', function() {});
 });
+
+function swallowError(e) {
+  console.log(e);
+  this.emit('end');
+}
