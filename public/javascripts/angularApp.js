@@ -15,7 +15,6 @@ angular.module('app', [
 
   auth.getUser()
     .success(function(user) {
-      console.log($state.$current);
       if($state.$current.name == 'index')
         $state.go('dashboard', {}, {'location': 'replace'});
     })

@@ -23,7 +23,7 @@ gulp.task('mongodb', function() {
 gulp.task('less', function() {
   gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
 
-  return gulp.src('./public/stylesheets/less/**/*.less')
+  return gulp.src('./public/stylesheets/less/style.less')
     .pipe(less())
     .pipe(minifyCSS())
     .pipe(gulp.dest('./public/stylesheets'));
