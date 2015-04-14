@@ -1,0 +1,26 @@
+@sizeH2AndBoardName: 140px;
+
+.card-list {
+  display: block;
+  height: calc(100% - @sizeH2AndBoardName);
+  width: 25%;
+  float: left;
+}
+
+.sortable {
+  padding: 0;
+  height: calc(100% - 63px);
+}
+
+.story-card, .story-card-placeholder {
+  background-color: @accent;
+  padding: 10px 10px 30px 10px;
+  margin: 10px;
+  border-radius: 10px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.story-card:hover {
+  background-color: @accent-darker;
+}

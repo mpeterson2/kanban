@@ -1,4 +1,7 @@
+@import 'colors';
 @import 'loader';
+@import 'navbar';
+@import 'board';
 
 body {
   padding-bottom: 10px;
@@ -10,36 +13,8 @@ body {
   border-radius: 5px;
 }
 
-.navbar .avatar {
-  top: 17px;
-}
-
-.navbar .octicon {
-  margin-top: 4px;
-}
-
-/* Normal navbar */
-@media (min-width: 768px) {
-  .icon-text {
-    display: none;
-  }
-}
-
-/* mobile navbar */
-@media (max-width: 767px) {
-  .icon-text {
-    display: inline;
-    margin-right: 10px;
-  }
-}
-
 .panel.panel-small {
   max-width: 50%;
-}
-
-.navbar-nav>li>a.image-text {
-  display: block;
-  padding: 5px 0px 0px 0px;
 }
 
 .pull-right.less-right {
@@ -50,39 +25,14 @@ body {
   cursor: pointer;
 }
 
-.card-list {
-  display: block;
-  height: calc(100% - 140px);
-  width: 25%;
-  float: left;
-}
-
-.sortable {
-  padding: 0;
-  height: calc(100% - 63px);
-}
-
-.story-card, .story-card-placeholder {
-  background-color: #f5f5f5;
-  padding: 10px 10px 30px 10px;
-  margin: 10px;
-  border-radius: 10px;
-  list-style: none;
-  cursor: pointer;
-}
-
-.story-card:hover {
-  background-color: #dfdfdf;
-}
-
 .badge-success {
-  background-color: #5cb85c;
+  background-color: @success;
 }
 
 .badge-warning {
-  background-color: #f0ad4e;
+  background-color: @warning;
 }
 
 .badge-error {
-  background-color: red;
+  background-color: @error;
 }
