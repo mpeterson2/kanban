@@ -6,7 +6,7 @@ var minifyCSS = require('gulp-minify-css');
 var path = require('path');
 
 
-gulp.task('default',['mongodb', 'less', 'start']);
+gulp.task('default', ['mongodb', 'less', 'start']);
 
 gulp.task('start', function() {
   return nodemon({
