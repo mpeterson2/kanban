@@ -5,7 +5,7 @@ var less = require('gulp-less');
 var path = require('path');
 
 
-gulp.task('default',['mongodb', 'start']);
+gulp.task('default',['mongodb', 'less', 'start']);
 
 gulp.task('start', function() {
   return nodemon({
@@ -20,6 +20,8 @@ gulp.task('mongodb', function() {
 });
 
 gulp.task('less', function() {
+  gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
+
   return gulp.src('./public/stylesheets/less/**/*.less')
     .pipe(less({
       paths: [ path.join(__dirname, 'less', 'includes') ]
