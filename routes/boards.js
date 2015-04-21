@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
 var Board = mongoose.model('Board');
+var Sprint = mongoose.model('Sprint');
 var Story = mongoose.model('Story');
 var Task = mongoose.model('Task');
 
@@ -21,6 +22,10 @@ router.get('/', isAuthenticated, function(req, res, next) {
 router.put('/', isAuthenticated, function(req, res, next) {
   var board = new Board(req.body);
   board.members.push(req.user);
+  var firstSprint = new Sprint();
+  board.firstSprint = firstSprint;
+  board.sprints.push(firstSprint);
+  firstSprint.save();
 
   board.save(function(err, board) {
     if(err)
@@ -49,6 +54,22 @@ router.param('board', function(req, res, next, id) {
 
 });
 
+router.param('sprint', function(req, res, next, id) {
+  if(!req.user)
+    return notFound(res);
+
+  Sprint.findById(id).exec(function(err, sprint) {
+    if(err)
+      return next(err);
+
+    if(!sprint)
+      notFound(res);
+
+    req.sprint = sprint;
+    return next();
+  });
+});
+
 router.param('story', function(req, res, next, id) {
   if(!req.user)
     return notFound(res);
@@ -66,21 +87,21 @@ router.param('story', function(req, res, next, id) {
 });
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
-  req.board.deepPopulate('members, todo, todo.tasks, develop, develop.tasks, test, test.tasks, done, done.tasks', function(err, board) {
-    if(err)
-      return next(err);
+  req.board.deepPopulate('members, firstSprint, firstSprint.todo, firstSprint.todo.tasks, firstSprint.develop, firstSprint.develop.tasks,' +
+    'firstSprint.test, firstSprint.test.tasks, firstSprint.done, firstSprint.done.tasks', function(err, board) {
+      if(err)
+        return next(err);
 
-    res.json(req.board);
-  })
+      res.json(req.board);
+    });
 });
 
-router.put('/:board/story/', isAuthenticated, function(req, res, next) {
+router.put('/:board/sprint/:sprint/story/', isAuthenticated, function(req, res, next) {
   var story = new Story(req.body);
-
   story.members.push(req.user);
-  req.board.todo.push(story);
+  req.sprint.todo.push(story);
 
-  req.board.save();
+  req.sprint.save();
 
   story.save(function(err, story) {
     if(err)
@@ -114,16 +135,16 @@ router.post('/:board/story/:story/task/:task', isAuthenticated, function(req, re
   });
 });
 
-router.post('/:board/story/:story/move', isAuthenticated, function(req, res, next) {
+router.post('/:board/sprint/:sprint/story/:story/move', isAuthenticated, function(req, res, next) {
   var from = req.body.from.toLowerCase();
   var to = req.body.to.toLowerCase();
   var index = req.body.index;
   var story = req.story;
-  var board = req.board;
+  var sprint = req.sprint;
 
-  board[from].pull(story._id);
-  board[to].splice(index, 0, story._id);
-  board.save();
+  sprint[from].pull(story._id);
+  sprint[to].splice(index, 0, story._id);
+  sprint.save();
 
   res.json({});
 })

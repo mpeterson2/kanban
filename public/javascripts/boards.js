@@ -1,7 +1,9 @@
+var scope;
 angular.module('boards', ['ui.bootstrap'])
-
 .controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards){
   $scope.board = boards.board;
+  $scope.sprint = boards.sprint;
+  scope = $scope;
 
   if($stateParams.boardId) {
     boards.get($stateParams.boardId)
@@ -20,7 +22,7 @@ angular.module('boards', ['ui.bootstrap'])
       var toList = ui.item.parent().scope().list.title;
       var index = ui.item.index();
 
-      return boards.moveStory($scope.board._id, fromList, toList, index, story._id);
+      return boards.moveStory($scope.board._id, $scope.sprint._id, fromList, toList, index, story._id);
     }
   };
 
@@ -35,6 +37,7 @@ angular.module('boards', ['ui.bootstrap'])
       templateUrl: '/html/story/new.html',
       controller: 'StoryModalCtrl',
       resolve: {
+        sprint: function() { return $scope.sprint; },
         story: function() { return undefined; }
       }
     });
@@ -45,6 +48,7 @@ angular.module('boards', ['ui.bootstrap'])
       templateUrl: '/html/story/view.html',
       controller: 'StoryModalCtrl',
       resolve: {
+        sprint: function() { return $scope.sprint; },
         story: function() { return story; }
       }
     });
@@ -56,7 +60,7 @@ angular.module('boards', ['ui.bootstrap'])
 
 })
 
-.controller('StoryModalCtrl', function($scope, $modalInstance, boards, story) {
+.controller('StoryModalCtrl', function($scope, $modalInstance, boards, story, sprint) {
   $scope.story = story;
 
   $scope.addTask = function() {
@@ -76,7 +80,7 @@ angular.module('boards', ['ui.bootstrap'])
     if(!$scope.story || !$scope.story.description)
       return;
 
-    boards.addStory($scope.story).success(function() {
+    boards.addStory(sprint._id, $scope.story).success(function() {
       $modalInstance.close();
     });
   }
@@ -86,20 +90,22 @@ angular.module('boards', ['ui.bootstrap'])
   var o = {
     board: {},
     boards: [],
+    sprint: {},
 
     get: function(id) {
       return $http.get('/boards/' + id).success(function(board) {
         angular.copy(board, o.board);
+        angular.copy(board.firstSprint, o.sprint);
 
-        var todo = o.board.todo;
-        var develop = board.develop;
-        var test = board.test;
-        var done = board.done;
+        var todo = o.board.firstSprint.todo;
+        var develop = board.firstSprint.develop;
+        var test = board.firstSprint.test;
+        var done = board.firstSprint.done;
         todo.title = "ToDo";
         develop.title = "Develop";
         test.title = "Test";
         done.title = "Done";
-        o.board.lists = [todo, develop, test, done];
+        o.sprint.lists = [todo, develop, test, done];
       });
     },
 
@@ -113,10 +119,10 @@ angular.module('boards', ['ui.bootstrap'])
       return $http.put('/boards', board);
     },
 
-    addStory: function(story) {
-      return $http.put('/boards/' + $stateParams.boardId + '/story', story)
+    addStory: function(sprintId, story) {
+      return $http.put('/boards/' + $stateParams.boardId + '/sprint/' + sprintId + '/story', story)
         .success(function(data) {
-          o.board.todo.push(data);
+          o.sprint.lists[0].push(data);
         });
     },
 
@@ -131,8 +137,8 @@ angular.module('boards', ['ui.bootstrap'])
       return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task/' + task._id, task);
     },
 
-    moveStory: function(boardId, from, to, index, storyId) {
-      return $http.post('/boards/' + boardId + '/story/' + storyId + '/move', {from: from, to: to, index: index});
+    moveStory: function(boardId, sprintId, from, to, index, storyId) {
+      return $http.post('/boards/' + boardId + '/sprint/' + sprintId + '/story/' + storyId + '/move', {from: from, to: to, index: index});
     }
   };
 

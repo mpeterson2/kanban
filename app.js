@@ -7,9 +7,10 @@ var bodyParser = require('body-parser');
 
 var config = require('./config');
 var mongoose = require('mongoose');
-require('./models/board.js');
-require('./models/story.js');
-require('./models/task.js');
+require('./models/board');
+require('./models/sprint');
+require('./models/story');
+require('./models/task');
 // Connect to DB
 mongoose.connect(config.db.url);
 
