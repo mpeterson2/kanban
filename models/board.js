@@ -51,15 +51,11 @@ boardSchema.method('currentSprint', function(cb) {
 
 boardSchema.method('sprintIndex', function(id, cb) {
   id = id.toString();
-  console.log('______________');
-  console.log(id);
   var index = 0;
 
   this.sprints.forEach(function(s, i) {
     var sId = s._id || s;
     sId = sId.toString();
-    console.log(sId);
-    console.log(sId == id);
     if(sId == id)
       index = i;
   });

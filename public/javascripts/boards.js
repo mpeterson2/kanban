@@ -1,6 +1,6 @@
 angular.module('boards', ['ui.bootstrap'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards){
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards, $location){
   $scope.board = boards.board;
   $scope.sprint = boards.sprint;
 
@@ -9,7 +9,18 @@ angular.module('boards', ['ui.bootstrap'])
       .error(function(error, status) {
         $state.go('error/' + status);
       });
+
+    // If we have the current sprintIndex, get a sprint
+    if($stateParams.sprintIndex) {
+      boards.getSprintIndex($stateParams.boardId, $stateParams.sprintIndex);
+    }
+
+    // Otherwise, get the currently dated sprint
+    else {
+      boards.getCurrentSprint($stateParams.boardId);
+    }
   }
+
 
   $scope.sortableOptions = {
     connectWith: '.sortable',
@@ -41,24 +52,20 @@ angular.module('boards', ['ui.bootstrap'])
     });
   };
 
-  $scope.decrementSprint = function() {
-    var prevIndex = $scope.sprint.index - 1;
-    var prevSprint = $scope.board.sprints[prevIndex];
+  $scope.canDecrementSprint = function() {
+    if(!$scope.sprint.index)
+      return false;
 
-    if(prevSprint) {
-      var prevSprintId = prevSprint._id;
-      boards.getSprint($scope.board._id, prevSprintId);
-    }
+    return $scope.sprint.index > 0;
   };
 
-  $scope.incrementSprint = function() {
+  $scope.canIncrementSprint = function() {
+    if($scope.sprint.index == undefined || $scope.board.sprints == undefined)
+      return false;
+
     var nextIndex = $scope.sprint.index + 1;
     var nextSprint = $scope.board.sprints[nextIndex];
-
-    if(nextSprint) {
-      var nextSprintId = nextSprint._id;
-      boards.getSprint($scope.board._id, nextSprintId);
-    }
+    return nextSprint != undefined;
   };
 
   $scope.showAddStory = function() {
@@ -124,17 +131,6 @@ angular.module('boards', ['ui.bootstrap'])
     get: function(id) {
       return $http.get('/boards/' + id).success(function(board) {
         angular.copy(board, o.board);
-        angular.copy(board.currentSprint, o.sprint);
-
-        var todo = o.sprint.todo;
-        var develop = o.sprint.develop;
-        var test = o.sprint.test;
-        var done = o.sprint.done;
-        todo.title = "ToDo";
-        develop.title = "Develop";
-        test.title = "Test";
-        done.title = "Done";
-        o.sprint.lists = [todo, develop, test, done];
       });
     },
 
@@ -149,7 +145,18 @@ angular.module('boards', ['ui.bootstrap'])
     },
 
     getSprint: function(boardId, sprintId) {
-      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(function(data) {
+      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(o.setSprint);
+    },
+
+    getCurrentSprint: function(boardId) {
+      return $http.get('/boards/' + boardId + '/sprint/current').success(o.setSprint);
+    },
+
+    getSprintIndex: function(boardId, sprintIndex) {
+      return $http.get('/boards/' + boardId + '/sprint/index/' + sprintIndex).success(o.setSprint);
+    },
+
+    setSprint: function(data) {
         angular.copy(data, o.sprint);
 
         var todo = o.sprint.todo;
@@ -161,7 +168,6 @@ angular.module('boards', ['ui.bootstrap'])
         test.title = "Test";
         done.title = "Done";
         o.sprint.lists = [todo, develop, test, done];
-      });
     },
 
     addStory: function(sprintId, story) {

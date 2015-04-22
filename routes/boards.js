@@ -86,23 +86,18 @@ router.param('story', function(req, res, next, id) {
   });
 });
 
+router.param('index', function(req, res, next, index) {
+  req.index = index;
+  return next();
+})
+
 router.get('/:board', isAuthenticated, function(req, res, next) {
 
   Board.findById(req.board._id, function(err, board) {
     if(err)
       return next(err);
 
-    board.currentSprint(function(sprint) {
-      sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
-        var s = sprint.toObject();
-        s.index = board.sprintIndex(sprint._id);
-        var b = board.toObject();
-        b.currentSprint = s;
-        b.numSprints = b.sprints.length;
-
-        res.json(b);
-      });
-    });
+    res.json(board);
   });
 });
 
@@ -127,6 +122,21 @@ router.put('/:board/sprint', isAuthenticated, function(req, res, next) {
     return saveSprint(res, board, sprint);
 });
 
+router.get('/:board/sprint/current', isAuthenticated, function(req, res, next) {
+  var board = req.board;
+
+  board.currentSprint(function(sprint) {
+    sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+      if(err)
+        return next(err);
+
+      var s = sprint.toObject();
+      s.index = board.sprintIndex(sprint._id);
+      res.json(s);
+    });
+  })
+});
+
 router.get('/:board/sprint/:sprint', isAuthenticated, function(req, res, next) {
   var sprint = req.sprint;
   var board = req.board;
@@ -140,6 +150,28 @@ router.get('/:board/sprint/:sprint', isAuthenticated, function(req, res, next) {
     console.log(s.index);
 
     res.json(s);
+  });
+});
+
+router.get('/:board/sprint/index/:index', isAuthenticated, function(req, res, next) {
+  console.log('--------------------');
+  var board = req.board;
+  var index = req.index;
+
+  var sprintId = board.sprints[index];
+
+  if(!sprintId)
+    return notFound(res);
+
+  Sprint.findById(sprintId).exec(function(err, sprint) {
+    console.log(sprint);
+
+    sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+      var s = sprint.toObject();
+      s.index = board.sprintIndex(sprint._id);
+
+      res.json(s);
+    });
   });
 });
 

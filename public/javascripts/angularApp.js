@@ -67,6 +67,12 @@ angular.module('app', [
       templateUrl: '/html/board/new.html'
     })
 
+    .state('board/sprint/view', {
+      url: '/boards/:boardId/:sprintIndex',
+      controller: 'BoardCtrl',
+      templateUrl: '/html/board/view.html'
+    })
+
     .state('board/view', {
       url: '/boards/:boardId',
       controller: 'BoardCtrl',
