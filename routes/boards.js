@@ -106,7 +106,6 @@ router.put('/:board/sprint', isAuthenticated, function(req, res, next) {
   var board = req.board;
 
   if(req.body.transferStories) {
-    console.log(board);
     var lastSprintId = board.sprints[board.sprints.length - 1];
     Sprint.findById(lastSprintId, function(err, lastSprint) {
       sprint.todo = lastSprint.todo;
@@ -146,15 +145,11 @@ router.get('/:board/sprint/:sprint', isAuthenticated, function(req, res, next) {
 
     var s = sprint.toObject();
     s.index = board.sprintIndex(sprint._id);
-    console.log('index: ');
-    console.log(s.index);
-
     res.json(s);
   });
 });
 
 router.get('/:board/sprint/index/:index', isAuthenticated, function(req, res, next) {
-  console.log('--------------------');
   var board = req.board;
   var index = req.index;
 
@@ -164,8 +159,6 @@ router.get('/:board/sprint/index/:index', isAuthenticated, function(req, res, ne
     return notFound(res);
 
   Sprint.findById(sprintId).exec(function(err, sprint) {
-    console.log(sprint);
-
     sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
       var s = sprint.toObject();
       s.index = board.sprintIndex(sprint._id);
