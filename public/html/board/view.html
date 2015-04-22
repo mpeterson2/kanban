@@ -1,10 +1,15 @@
 <h1>{{board.name}}
   <small><a class="clickable" ng-click="showAddSprint()">Add sprint</a></small>
 </h1>
-<div>
-  <span><a class="clickable" href="/#/boards/{{board._id}}/{{sprint.index-1}}" ng-show="canDecrementSprint()"><<</a></span>
-  <span>Sprint #{{sprint.index}} - {{sprint.startDate | date}}</span>
-  <span ng-show="sprint.endDate"> - {{sprint.endDate | date}}</span>
+<div class="sprint-viewer">
+  <span><a class="clickable pull-left" href="/#/boards/{{board._id}}/{{sprint.index-1}}" ng-show="canDecrementSprint()"><<</a></span>
+  <div class="pull-left">
+    <div class="center-text">Sprint #{{sprint.index}}</div>
+    <div>
+      {{sprint.startDate | date}}
+      <span ng-show="sprint.endDate"> - {{sprint.endDate | date}}</span>
+    </div>
+  </div>
   <span><a class="clickable" href="/#/boards/{{board._id}}/{{sprint.index+1}}" ng-show="canIncrementSprint()">>></a></span>
 </div>
 
