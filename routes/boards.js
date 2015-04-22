@@ -87,14 +87,77 @@ router.param('story', function(req, res, next, id) {
 });
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
-  req.board.deepPopulate('members, firstSprint, firstSprint.todo, firstSprint.todo.tasks, firstSprint.develop, firstSprint.develop.tasks,' +
-    'firstSprint.test, firstSprint.test.tasks, firstSprint.done, firstSprint.done.tasks', function(err, board) {
+
+  Board.findById(req.board._id, function(err, board) {
+    if(err)
+      return next(err);
+
+    board.currentSprint(function(sprint) {
+      sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+        var s = sprint.toObject();
+        s.index = board.sprintIndex(sprint._id);
+        var b = board.toObject();
+        b.currentSprint = s;
+        b.numSprints = b.sprints.length;
+
+        res.json(b);
+      });
+    });
+  });
+});
+
+router.put('/:board/sprint', isAuthenticated, function(req, res, next) {
+  var sprint = new Sprint(req.body);
+  var board = req.board;
+
+  if(req.body.transferStories) {
+    console.log(board);
+    var lastSprintId = board.sprints[board.sprints.length - 1];
+    Sprint.findById(lastSprintId, function(err, lastSprint) {
+      sprint.todo = lastSprint.todo;
+      sprint.develop = lastSprint.develop;
+      sprint.test = lastSprint.test;
+
+      return saveSprint(res, board, sprint);
+    });
+
+  }
+
+  else
+    return saveSprint(res, board, sprint);
+});
+
+router.get('/:board/sprint/:sprint', isAuthenticated, function(req, res, next) {
+  var sprint = req.sprint;
+  var board = req.board;
+  sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+    if(err)
+      return next(err);
+
+    var s = sprint.toObject();
+    s.index = board.sprintIndex(sprint._id);
+    console.log('index: ');
+    console.log(s.index);
+
+    res.json(s);
+  });
+});
+
+function saveSprint(res, board, sprint) {
+  board.sprints.push(sprint);
+
+  board.save(function(err) {
+    if(err)
+      return next(err);
+
+    sprint.save(function(err, spr) {
       if(err)
         return next(err);
 
-      res.json(req.board);
+      return res.json(spr);
     });
-});
+  });
+}
 
 router.put('/:board/sprint/:sprint/story/', isAuthenticated, function(req, res, next) {
   var story = new Story(req.body);

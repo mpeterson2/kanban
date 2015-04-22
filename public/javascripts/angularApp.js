@@ -6,6 +6,7 @@ angular.module('app', [
   'authentication',
   'dashboard',
   'boards',
+  'sprints',
   'avatar',
   'loading'
 ])

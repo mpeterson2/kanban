@@ -1,4 +1,12 @@
-<h1>{{board.name}}</h1>
+<h1>{{board.name}}
+  <small><a class="clickable" ng-click="showAddSprint()">Add sprint</a></small>
+</h1>
+<div>
+  <span><a class="clickable" ng-click="decrementSprint()"><<</a></span>
+  <span>Sprint #{{sprint.index}} - {{sprint.startDate | date}}</span>
+  <span ng-show="sprint.endDate"> - {{sprint.endDate | date}}</span>
+  <span><a class="clickable" ng-click="incrementSprint()">>></a></span>
+</div>
 
 <div ng-repeat="list in sprint.lists">
   <div class="card-list">

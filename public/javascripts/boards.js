@@ -1,9 +1,8 @@
-var scope;
 angular.module('boards', ['ui.bootstrap'])
+
 .controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards){
   $scope.board = boards.board;
   $scope.sprint = boards.sprint;
-  scope = $scope;
 
   if($stateParams.boardId) {
     boards.get($stateParams.boardId)
@@ -30,6 +29,36 @@ angular.module('boards', ['ui.bootstrap'])
     boards.create($scope.board).success(function(data) {
       $state.go('dashboard');
     });
+  };
+
+  $scope.showAddSprint = function() {
+    $modal.open({
+      templateUrl: '/html/sprint/new.html',
+      controller: 'SprintModalCtrl',
+      resolve: {
+        board: function() { return $scope.board }
+      }
+    });
+  };
+
+  $scope.decrementSprint = function() {
+    var prevIndex = $scope.sprint.index - 1;
+    var prevSprint = $scope.board.sprints[prevIndex];
+
+    if(prevSprint) {
+      var prevSprintId = prevSprint._id;
+      boards.getSprint($scope.board._id, prevSprintId);
+    }
+  };
+
+  $scope.incrementSprint = function() {
+    var nextIndex = $scope.sprint.index + 1;
+    var nextSprint = $scope.board.sprints[nextIndex];
+
+    if(nextSprint) {
+      var nextSprintId = nextSprint._id;
+      boards.getSprint($scope.board._id, nextSprintId);
+    }
   };
 
   $scope.showAddStory = function() {
@@ -95,12 +124,12 @@ angular.module('boards', ['ui.bootstrap'])
     get: function(id) {
       return $http.get('/boards/' + id).success(function(board) {
         angular.copy(board, o.board);
-        angular.copy(board.firstSprint, o.sprint);
+        angular.copy(board.currentSprint, o.sprint);
 
-        var todo = o.board.firstSprint.todo;
-        var develop = board.firstSprint.develop;
-        var test = board.firstSprint.test;
-        var done = board.firstSprint.done;
+        var todo = o.sprint.todo;
+        var develop = o.sprint.develop;
+        var test = o.sprint.test;
+        var done = o.sprint.done;
         todo.title = "ToDo";
         develop.title = "Develop";
         test.title = "Test";
@@ -117,6 +146,22 @@ angular.module('boards', ['ui.bootstrap'])
 
     create: function(board) {
       return $http.put('/boards', board);
+    },
+
+    getSprint: function(boardId, sprintId) {
+      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(function(data) {
+        angular.copy(data, o.sprint);
+
+        var todo = o.sprint.todo;
+        var develop = o.sprint.develop;
+        var test = o.sprint.test;
+        var done = o.sprint.done;
+        todo.title = "ToDo";
+        develop.title = "Develop";
+        test.title = "Test";
+        done.title = "Done";
+        o.sprint.lists = [todo, develop, test, done];
+      });
     },
 
     addStory: function(sprintId, story) {
