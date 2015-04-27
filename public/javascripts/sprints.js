@@ -1,6 +1,6 @@
 angular.module('sprints', [])
 
-.controller('SprintModalCtrl', function($scope, sprints, board) {
+.controller('SprintModalCtrl', function($scope, $modalInstance, $state, sprints, board) {
   $scope.sprint = {
     startDate: new Date(),
     endDate: new Date(),
@@ -21,20 +21,19 @@ angular.module('sprints', [])
       return;
     }
 
-    sprints.addSprint(board._id, sprint);
+    sprints.addSprint(board._id, sprint).success(function(sprint) {
+      var index = board.sprints.length;
+      var url = '/#/boards/' + board._id + '/' + index;
+      $state.go('board/sprint/view', {boardId: board._id, sprintIndex: index});
+      $modalInstance.close();
+    });
   };
 })
 
 .factory('sprints', function($http) {
   var o = {
     addSprint: function(boardId, sprint) {
-      console.log(boardId);
-      console.log(sprint);
-
-      return $http.put('/boards/' + boardId + '/sprint', sprint)
-        .success(function(data) {
-          console.log(data);
-        });
+      return $http.put('/boards/' + boardId + '/sprint', sprint);
     }
   };
 

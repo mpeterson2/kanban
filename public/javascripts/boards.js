@@ -1,6 +1,7 @@
 angular.module('boards', ['ui.bootstrap', 'users'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards, $location){
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards, $location) {
+  angular.copy({}, boards.board);
   $scope.board = boards.board;
   $scope.sprint = boards.sprint;
 
