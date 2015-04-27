@@ -279,12 +279,14 @@ router.delete('/:board/member/:user', isAuthenticated, function(req, res, next) 
 });
 
 router.post('/:board/story/:story/member/:user', isAuthenticated, function(req, res, next) {
+  var board = req.board;
   var story = req.story;
   var user = req.user;
 
+  var inBoard = board.members.filter(function(m) {return m.username == user.username});
   var found = story.members.filter(function(m) {return m.username == user.username});
 
-  if(found.length == 0) {
+  if(found.length == 0 && inBoard.length != 0) {
     story.members.push(user);
 
     story.save(function(story) {
