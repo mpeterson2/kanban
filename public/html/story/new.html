@@ -20,9 +20,9 @@
     <div ng-repeat="member in story.members">
         <avatar user="{{member}}" tooltip=""></avatar>
         <span tooltip="{{member.username}}">{{member.firstName}} {{member.lastName}}</span>
-        <span ng-click="removeMemberFromNewStory(member.username)" class="clickable" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
+        <span ng-click="removeMember(member.username)" class="clickable" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
     </div>
-    <form ng-submit="addMemberToNewStory(newMember.username)">
+    <form ng-submit="addMember(newMember.username)">
       <input type="text" placeholder="Username" ng-model="newMember.username">
       <input type="submit" class="btn btn-success" value="Add member">
     </form>
@@ -30,6 +30,6 @@
 
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="addStory()">OK</button>
+    <button class="btn btn-primary" ng-click="createStory()">OK</button>
     <button class="btn btn-warning" ng-click="$close()">Cancel</button>
 </div>

@@ -1,9 +1,9 @@
-angular.module('boards', ['ui.bootstrap', 'users'])
+angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards, $location) {
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards, sprints, stories) {
   angular.copy({}, boards.board);
   $scope.board = boards.board;
-  $scope.sprint = boards.sprint;
+  $scope.sprint = sprints.sprint;
 
   if($stateParams.boardId) {
     boards.get($stateParams.boardId)
@@ -13,12 +13,12 @@ angular.module('boards', ['ui.bootstrap', 'users'])
 
     // If we have the current sprintIndex, get a sprint
     if($stateParams.sprintIndex) {
-      boards.getSprintIndex($stateParams.boardId, $stateParams.sprintIndex);
+      sprints.getByIndex($stateParams.boardId, $stateParams.sprintIndex);
     }
 
     // Otherwise, get the currently dated sprint
     else {
-      boards.getCurrentSprint($stateParams.boardId);
+      sprints.getCurrent($stateParams.boardId);
     }
   }
 
@@ -32,7 +32,7 @@ angular.module('boards', ['ui.bootstrap', 'users'])
       var toList = ui.item.parent().scope().list.title;
       var index = ui.item.index();
 
-      return boards.moveStory($scope.board._id, $scope.sprint._id, fromList, toList, index, story._id);
+      return stories.move($scope.board._id, $scope.sprint._id, fromList, toList, index, story._id);
     }
   };
 
@@ -71,10 +71,10 @@ angular.module('boards', ['ui.bootstrap', 'users'])
   $scope.showAddStory = function() {
     $modal.open({
       templateUrl: '/html/story/new.html',
-      controller: 'StoryModalCtrl',
+      controller: 'StoryCreateCtrl',
       resolve: {
-        sprint: function() { return $scope.sprint; },
-        story: function() { return undefined; }
+        board: function() { return $scope.board; },
+        sprint: function() { return $scope.sprint; }
       }
     });
   };
@@ -82,9 +82,9 @@ angular.module('boards', ['ui.bootstrap', 'users'])
   $scope.showStory = function(story) {
     $modal.open({
       templateUrl: '/html/story/view.html',
-      controller: 'StoryModalCtrl',
+      controller: 'StoryViewController',
       resolve: {
-        sprint: function() { return $scope.sprint; },
+        board: function() { return $scope.board; },
         story: function() { return story; }
       }
     });
@@ -106,65 +106,6 @@ angular.module('boards', ['ui.bootstrap', 'users'])
 
 })
 
-.controller('StoryModalCtrl', function($scope, $modalInstance, boards, users, story, sprint) {
-  if(!story) {
-    story = {members: [], description: '', points: 1};
-  }
-  $scope.story = story;
-
-  $scope.addTask = function() {
-    if(!$scope.newTask || !$scope.newTask.description)
-      return;
-
-    boards.addTask(story, $scope.newTask).success(function() {
-      $scope.newTask = {};
-    });
-  };
-
-  $scope.toggleDone = function(task) {
-    boards.updateTask(story, task);
-  };
-
-  $scope.addStory = function() {
-    if(!$scope.story || !$scope.story.description)
-      return;
-
-    boards.addStory(sprint._id, $scope.story).success(function() {
-      $modalInstance.close();
-    });
-  };
-
-  $scope.addMemberToNewStory = function(username) {
-    var members = $scope.story.members.filter(function(m) {return m.username == username});
-
-    if(members.length == 0) {
-      users.getUser(username).success(function(member) {
-        $scope.story.members.push(member);
-        $scope.newMember.username = '';
-      });
-    }
-  };
-
-  $scope.removeMemberFromNewStory = function(username) {
-    var members = $scope.story.members;
-    var newMembers = members.filter(function(m) {return m.username != username});
-    angular.copy(newMembers, members);
-  }
-
-  $scope.addMember = function(username) {
-    if(username == undefined || username == '')
-      return;
-
-    boards.addMemberToStory(story, username).success(function() {
-      $scope.newUser.username = '';
-    });
-  };
-
-  $scope.removeMember = function(username) {
-    boards.removeMemberFromStory(story, username);
-  };
-})
-
 .controller('MemberManageCtrl', function($scope, $modalInstance, boards, board) {
   $scope.members = board.members;
 
@@ -182,11 +123,10 @@ angular.module('boards', ['ui.bootstrap', 'users'])
   };
 })
 
-.factory('boards', function($http, $stateParams) {
+.factory('boards', function($http, $stateParams, sprints) {
   var o = {
     board: {},
     boards: [],
-    sprint: {},
 
     get: function(id) {
       return $http.get('/boards/' + id).success(function(board) {
@@ -202,54 +142,6 @@ angular.module('boards', ['ui.bootstrap', 'users'])
 
     create: function(board) {
       return $http.put('/boards', board);
-    },
-
-    getSprint: function(boardId, sprintId) {
-      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(o.setSprint);
-    },
-
-    getCurrentSprint: function(boardId) {
-      return $http.get('/boards/' + boardId + '/sprint/current').success(o.setSprint);
-    },
-
-    getSprintIndex: function(boardId, sprintIndex) {
-      return $http.get('/boards/' + boardId + '/sprint/index/' + sprintIndex).success(o.setSprint);
-    },
-
-    setSprint: function(data) {
-        angular.copy(data, o.sprint);
-
-        var todo = o.sprint.todo;
-        var develop = o.sprint.develop;
-        var test = o.sprint.test;
-        var done = o.sprint.done;
-        todo.title = "ToDo";
-        develop.title = "Develop";
-        test.title = "Test";
-        done.title = "Done";
-        o.sprint.lists = [todo, develop, test, done];
-    },
-
-    addStory: function(sprintId, story) {
-      return $http.put('/boards/' + $stateParams.boardId + '/sprint/' + sprintId + '/story', story)
-        .success(function(data) {
-          o.sprint.lists[0].push(data);
-        });
-    },
-
-    addTask: function(story, task) {
-      return $http.put('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task', task)
-        .success(function(data) {
-          story.tasks.push(data);
-        });
-    },
-
-    updateTask: function(story, task) {
-      return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/task/' + task._id, task);
-    },
-
-    moveStory: function(boardId, sprintId, from, to, index, storyId) {
-      return $http.post('/boards/' + boardId + '/sprint/' + sprintId + '/story/' + storyId + '/move', {from: from, to: to, index: index});
     },
 
     addMember: function(boardId, username) {
@@ -269,27 +161,12 @@ angular.module('boards', ['ui.bootstrap', 'users'])
           story.members = newStoryMembers;
         }
 
-        o.sprint.todo.forEach(removeUser);
-        o.sprint.develop.forEach(removeUser);
-        o.sprint.test.forEach(removeUser);
-        o.sprint.done.forEach(removeUser);
-      });
-    },
-
-    addMemberToStory: function(story, username) {
-      return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/member/' + username).success(function(member) {
-        story.members.push(member);
-      });
-    },
-
-    removeMemberFromStory: function(story, username) {
-      return $http.delete('/boards/' + $stateParams.boardId + '/story/' + story._id + '/member/' + username).success(function(member) {
-        var members = story.members;
-        var newMembers = members.filter(function(m) {return m._id != member._id});
-        angular.copy(newMembers, members);
+        sprints.sprint.todo.forEach(removeUser);
+        sprints.sprint.develop.forEach(removeUser);
+        sprints.sprint.test.forEach(removeUser);
+        sprints.sprint.done.forEach(removeUser);
       });
     }
-
   };
 
 

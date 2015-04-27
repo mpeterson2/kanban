@@ -7,6 +7,8 @@ angular.module('app', [
   'dashboard',
   'boards',
   'sprints',
+  'stories',
+  'tasks',
   'avatar',
   'loading'
 ])

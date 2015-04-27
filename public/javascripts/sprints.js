@@ -32,8 +32,36 @@ angular.module('sprints', [])
 
 .factory('sprints', function($http) {
   var o = {
-    addSprint: function(boardId, sprint) {
+    sprint: {},
+
+    create: function(boardId, sprint) {
       return $http.put('/boards/' + boardId + '/sprint', sprint);
+    },
+
+    get: function(boardId, sprintId) {
+      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(o.setSprint);
+    },
+
+    getCurrent: function(boardId) {
+      return $http.get('/boards/' + boardId + '/sprint/current').success(o.setSprint);
+    },
+
+    getByIndex: function(boardId, index) {
+      return $http.get('/boards/' + boardId + '/sprint/index/' + index).success(o.setSprint);
+    },
+
+    setSprint: function(data) {
+        angular.copy(data, o.sprint);
+
+        var todo = o.sprint.todo;
+        var develop = o.sprint.develop;
+        var test = o.sprint.test;
+        var done = o.sprint.done;
+        todo.title = "ToDo";
+        develop.title = "Develop";
+        test.title = "Test";
+        done.title = "Done";
+        o.sprint.lists = [todo, develop, test, done];
     }
   };
 
