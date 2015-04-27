@@ -12,6 +12,10 @@ angular.module('avatar', ['angular-md5', 'authentication'])
       if(user && user.email) {
         scope.user = user;
         scope.user.gravatar = 'https://gravatar.com/avatar/' + md5.createHash(user.email);
+
+        if(attrs.tooltip === undefined) {
+          scope.tooltip = user.firstName + ' ' + user.lastName;
+        }
       }
     });
   };

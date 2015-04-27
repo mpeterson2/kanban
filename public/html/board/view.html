@@ -1,4 +1,13 @@
-<h1>{{board.name}}</h1>
+<h1>{{board.name}}
+<div class="btn-group" dropdown is-open="status.isopen">
+      <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle ng-disabled="disabled">
+        <i class="glyphicon glyphicon-cog"></i> <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a ng-click="showMemberManagement()">Manage members</a></li>
+      </ul>
+    </div>
+</h1>
 
 <div class="sprint-viewer">
   <span class="center-text">

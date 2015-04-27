@@ -21,7 +21,6 @@ angular.module('boards', ['ui.bootstrap'])
     }
   }
 
-
   $scope.sortableOptions = {
     connectWith: '.sortable',
     placeholder: 'story-card-placeholder',
@@ -94,6 +93,16 @@ angular.module('boards', ['ui.bootstrap'])
     return story.tasks.filter(function(t) {return t.done}).length;
   };
 
+  $scope.showMemberManagement = function() {
+    $modal.open({
+      templateUrl: '/html/board/manage-members.html',
+      controller: 'MemberManageCtrl',
+      resolve: {
+        board: function() { return $scope.board; }
+      }
+    });
+  }
+
 })
 
 .controller('StoryModalCtrl', function($scope, $modalInstance, boards, story, sprint) {
@@ -120,6 +129,18 @@ angular.module('boards', ['ui.bootstrap'])
       $modalInstance.close();
     });
   }
+})
+
+.controller('MemberManageCtrl', function($scope, $modalInstance, boards, board) {
+  $scope.members = board.members;
+
+  $scope.addMember = function(username) {
+    boards.addMember(board._id, username);
+  };
+
+  $scope.removeMember = function(username) {
+    boards.removeMember(board._id, username);
+  };
 })
 
 .factory('boards', function($http, $stateParams) {
@@ -190,6 +211,22 @@ angular.module('boards', ['ui.bootstrap'])
 
     moveStory: function(boardId, sprintId, from, to, index, storyId) {
       return $http.post('/boards/' + boardId + '/sprint/' + sprintId + '/story/' + storyId + '/move', {from: from, to: to, index: index});
+    },
+
+    addMember: function(boardId, username) {
+      return $http.post('/boards/' + boardId + '/member/' + username).success(function(member) {
+        o.board.members.push(member);
+      });
+    },
+
+    removeMember: function(boardId, username) {
+      return $http.delete('/boards/' + boardId + '/member/' + username).success(function(member) {
+        var members = o.board.members;
+        var index = members.indexOf(member);
+
+        var newMembers = members.filter(function(m) {return m._id != member._id} );
+        angular.copy(newMembers, members);
+      });
     }
   };
 

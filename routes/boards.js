@@ -5,6 +5,7 @@ var Board = mongoose.model('Board');
 var Sprint = mongoose.model('Sprint');
 var Story = mongoose.model('Story');
 var Task = mongoose.model('Task');
+var User = mongoose.model('User');
 
 var isAuthenticated = function(req, res, next) {
   if(req.isAuthenticated())
@@ -40,7 +41,7 @@ router.param('board', function(req, res, next, id) {
     return notFound(res);
   }
 
-  Board.findById(id).populate('members').where('members').in([req.user._id])
+  Board.findById(id).populate('members')
     .exec(function(err, board) {
       if(err)
         return next(err);
@@ -89,16 +90,24 @@ router.param('story', function(req, res, next, id) {
 router.param('index', function(req, res, next, index) {
   req.index = index;
   return next();
-})
+});
 
-router.get('/:board', isAuthenticated, function(req, res, next) {
-
-  Board.findById(req.board._id, function(err, board) {
+router.param('user', function(req, res, next, username) {
+  User.where({username: username}).findOne(function(err, user) {
     if(err)
       return next(err);
 
-    res.json(board);
-  });
+    if(!user)
+      return notFound(res);
+
+    req.user = user;
+    return next();
+  })
+});
+
+router.get('/:board', isAuthenticated, function(req, res, next) {
+  var board = req.board;
+  res.json(board);
 });
 
 router.put('/:board/sprint', isAuthenticated, function(req, res, next) {
@@ -235,6 +244,28 @@ router.post('/:board/sprint/:sprint/story/:story/move', isAuthenticated, functio
   sprint.save();
 
   res.json({});
+});
+
+router.post('/:board/member/:user', isAuthenticated, function(req, res, next) {
+  var board = req.board;
+  var user = req.user;
+
+  board.members.push(user);
+
+  board.save(function() {
+    res.json(user);
+  });
+});
+
+router.delete('/:board/member/:user', isAuthenticated, function(req, res, next) {
+  var board = req.board;
+  var user = req.user;
+
+  board.members.pull(user);
+
+  board.save(function() {
+    res.json(user);
+  })
 })
 
 notFound = function(res) {
