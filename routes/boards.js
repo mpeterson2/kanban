@@ -284,9 +284,28 @@ router.delete('/:board/member/:user', isAuthenticated, function(req, res, next) 
 
   board.members.pull(user);
 
-  board.save(function() {
-    res.json(user);
+  // Remove the user from each story
+  board.deepPopulate('sprints.todo.members, sprints.develop.members, sprints.test.members, sprints.done.members', function(err, board) {
+    function removeUser(story) {
+      var ids = story.members.map(function(m) {return m._id});
+      var members = ids.filter(function(id) {return !user._id.equals(id)});
+      story.members = members;
+
+      return story.save();
+    }
+
+    board.sprints.forEach(function(sprint) {
+      sprint.todo.forEach(removeUser);
+      sprint.develop.forEach(removeUser);
+      sprint.test.forEach(removeUser);
+      sprint.done.forEach(removeUser);
+    });
+
+    board.save(function() {
+      res.json(user);
+    });
   });
+
 });
 
 router.post('/:board/story/:story/member/:user', isAuthenticated, function(req, res, next) {

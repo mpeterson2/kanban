@@ -262,6 +262,16 @@ angular.module('boards', ['ui.bootstrap', 'users'])
         var members = o.board.members;
         var newMembers = members.filter(function(m) {return m._id != member._id});
         angular.copy(newMembers, members);
+
+        function removeUser(story) {
+          var newStoryMembers = story.members.filter(function(m) {return m._id != member._id});
+          story.members = newStoryMembers;
+        }
+
+        o.sprint.todo.forEach(removeUser);
+        o.sprint.develop.forEach(removeUser);
+        o.sprint.test.forEach(removeUser);
+        o.sprint.done.forEach(removeUser);
       });
     },
 
