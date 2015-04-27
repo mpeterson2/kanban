@@ -15,38 +15,62 @@ boardSchema.set('toJSON', { getters: true });
 
 boardSchema.method('currentSprint', function(cb) {
   this.populate('sprints', function(err, board) {
-    var today = Date.now();
-    var currSprint = board.sprints.filter(function(s) {
-      var stime = s.startDate.getTime();
-      var etime;
-      if(s.endDate)
-        etime = s.endDate.getTime();
-      else
-        return false;
 
-      return stime < today && today < etime;
-    });
-
-    // If no sprints are within the time period
-    if(currSprint.length == 0) {
-
-      // return the last sprint if it is later than the last sprint
-      var lastSprint = board.sprints[board.sprints.length - 1];
-      if(today > lastSprint.startDate.getTime())
-        cb(lastSprint);
-
-      // return the first sprint if we are before the last sprint
-      else
-        cb(board.sprints[0]);
+    // If we have 1 sprint, return it
+    if(board.sprints.length == 1) {
+      cb(board.sprints[0]);
     }
 
-    // return the first matching sprint
+    // Find the sprints that are good, and return one of them.
     else {
-      var sprint = currSprint[0];
-      cb(sprint);
+      var now = Date.now();
+
+      // A sprint is valid if it starts before now and ends after now, or if it ends before now.
+      var validSprints = board.sprints.filter(function(s) {
+        var start = s.startDate.getTime();
+        var end = 0;
+        if(s.endDate)
+          end = s.endDate.getTime();
+
+        return ((start < now && now < end) || (end < now));
+      });
+
+      // Return the sprint that is between the date
+      if(validSprints.length > 0) {
+        for(var i=0; i<validSprints.length; i++) {
+          var s = validSprints[i];
+          var start = s.startDate.getTime();
+          var end = 0;
+          if(s.endDate)
+            end = s.endDate.getTime();
+
+          // If the date is between the sprint's start and end, return it.
+          if(start < now && now < end) {
+            cb(s);
+            return;
+          }
+        }
+
+        // We are not in a sprint, so return the last one that starts after the date.
+        var retSprint = validSprints[0];
+        for(var i=1; i<validSprints.length; i++) {
+          var s = validSprints[i];
+          var start = s.startDate.getTime();
+
+          if(start < now) {
+            retSprint = s;
+          }
+        }
+
+        cb(s);
+      }
+
+      // Return the last sprint if all sprints are after the current date.
+      else {
+        cb(board.sprints[board.sprints.length - 1]);
+      }
     }
   });
-
 });
 
 boardSchema.method('sprintIndex', function(id, cb) {
