@@ -199,6 +199,12 @@ function saveSprint(res, board, sprint) {
 router.put('/:board/sprint/:sprint/story/', isAuthenticated, function(req, res, next) {
   var story = new Story(req.body);
 
+  // Only allow members of this board to be added to the story.
+  var boardMembers = req.board.members.map(function(m) {return m._id.toString()});
+  var storyMembers = story.members.map(function(m) {return m.toString()});
+  var members = storyMembers.filter(function(m) {return boardMembers.indexOf(m) != -1});
+  story.members = members;
+
   req.sprint.todo.push(story);
   req.sprint.save();
 
