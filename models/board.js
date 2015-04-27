@@ -32,7 +32,7 @@ boardSchema.method('currentSprint', function(cb) {
         if(s.endDate)
           end = s.endDate.getTime();
 
-        return ((start < now && now < end) || (end < now));
+        return true;
       });
 
       // Return the sprint that is between the date
@@ -57,9 +57,11 @@ boardSchema.method('currentSprint', function(cb) {
           var s = validSprints[i];
           var start = s.startDate.getTime();
 
-          if(start < now) {
-            retSprint = s;
+          if(start > now) {
+            break;
           }
+
+          retSprint = s;
         }
 
         cb(s);

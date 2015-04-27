@@ -105,7 +105,7 @@ router.param('user', function(req, res, next, username) {
 
     req.user = user;
     return next();
-  })
+  });
 });
 
 router.get('/:board', isAuthenticated, function(req, res, next) {
@@ -198,16 +198,21 @@ function saveSprint(res, board, sprint) {
 
 router.put('/:board/sprint/:sprint/story/', isAuthenticated, function(req, res, next) {
   var story = new Story(req.body);
-  story.members.push(req.user);
-  req.sprint.todo.push(story);
 
+  req.sprint.todo.push(story);
   req.sprint.save();
 
   story.save(function(err, story) {
     if(err)
       return next(err);
 
-    res.json(story);
+    story.populate('members', function(err, story) {
+      if(err) {
+        return next(err);
+      }
+
+      res.json(story);
+    });
   });
 });
 

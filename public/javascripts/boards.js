@@ -1,4 +1,4 @@
-angular.module('boards', ['ui.bootstrap'])
+angular.module('boards', ['ui.bootstrap', 'users'])
 
 .controller('BoardCtrl', function($scope, $state, $stateParams, $modal, $q, boards, $location){
   $scope.board = boards.board;
@@ -105,7 +105,10 @@ angular.module('boards', ['ui.bootstrap'])
 
 })
 
-.controller('StoryModalCtrl', function($scope, $modalInstance, boards, story, sprint) {
+.controller('StoryModalCtrl', function($scope, $modalInstance, boards, users, story, sprint) {
+  if(!story) {
+    story = {members: [], description: '', points: 1};
+  }
   $scope.story = story;
 
   $scope.addTask = function() {
@@ -129,6 +132,23 @@ angular.module('boards', ['ui.bootstrap'])
       $modalInstance.close();
     });
   };
+
+  $scope.addMemberToNewStory = function(username) {
+    var members = $scope.story.members.filter(function(m) {return m.username == username});
+
+    if(members.length == 0) {
+      users.getUser(username).success(function(member) {
+        $scope.story.members.push(member);
+        $scope.newMember.username = '';
+      });
+    }
+  };
+
+  $scope.removeMemberFromNewStory = function(username) {
+    var members = $scope.story.members;
+    var newMembers = members.filter(function(m) {return m.username != username});
+    angular.copy(newMembers, members);
+  }
 
   $scope.addMember = function(username) {
     if(username == undefined || username == '')
