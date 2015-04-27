@@ -37,7 +37,7 @@
           <div>{{story.description}}</div>
 
           <div class="pull-left">
-            <avatar ng-repeat="member in story.members" user="{{member}}"></avatar>
+            <avatar ng-repeat="member in story.members" user="{{member}}" href=""></avatar>
           </div>
           <div class="pull-right badge"
             ng-class="{'badge-success': doneCount(story) == story.tasks.length,

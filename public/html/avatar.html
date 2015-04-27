@@ -1,7 +1,14 @@
-<a href="/#/users/{{user._id}}">
+<a href="{{href}}" ng-if="href">
   <img
     ng-src="{{user.gravatar}}?size={{size}}"
     tooltip-placement="bottom"
     tooltip="{{tooltip}}"
     class="avatar" />
 </a>
+
+<img
+    ng-if="!href"
+    ng-src="{{user.gravatar}}?size={{size}}"
+    tooltip-placement="bottom"
+    tooltip="{{tooltip}}"
+    class="avatar" />
