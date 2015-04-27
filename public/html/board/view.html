@@ -11,10 +11,10 @@
 
 <div class="sprint-viewer">
   <span class="center-text">
-    <span><a class="clickable" href="/#/boards/{{board._id}}/{{sprint.index-1}}" ng-show="canDecrementSprint()"><<</a></span>
+    <span><a class="clickable" href="/#/boards/{{board._id}}/{{sprint.index-1}}" ng-show="canDecrementSprint()"><i class="glyphicon glyphicon-chevron-left" tooltip="Previous sprint"></i></a></span>
     <span>Sprint #{{sprint.index}}</span>
-    <span><a class="clickable" href="/#/boards/{{board._id}}/{{sprint.index+1}}" ng-show="canIncrementSprint()">>></a></span>
-    <span><a class="clickable" ng-click="showAddSprint()" ng-hide="canIncrementSprint()">+</a></span>
+    <span><a class="clickable" href="/#/boards/{{board._id}}/{{sprint.index+1}}" ng-show="canIncrementSprint()"><i class="glyphicon glyphicon-chevron-right" tooltip="Next sprint"></i></a></span>
+    <span><a class="clickable" ng-click="showAddSprint()" ng-hide="canIncrementSprint()"><i class="glyphicon glyphicon-plus" tooltip="Add sprint"></i></a></span>
   </span>
   <div>
       {{sprint.startDate | date}}
@@ -27,7 +27,7 @@
     <h2 class="text-center">
       {{list.title}}
       <small>
-        <a ng-click="showAddStory()" class="clickable" ng-if="list.title == 'ToDo'">New</a>
+        <a ng-click="showAddStory()" class="clickable" ng-if="list.title == 'ToDo'"><i class="glyphicon glyphicon-plus" tooltip="Add story"></i></a>
       </small>
     </h2>
 
