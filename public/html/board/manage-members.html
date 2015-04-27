@@ -10,9 +10,11 @@
   </div>
 
   <div>
-    <label>Add member</label>
-    <input type="input" placeholder="Username" ng-model="newUser.username">
-    <button class="btn btn-success" ng-click="addMember(newUser.username)">Add</button>
+    <form ng-submit="addMember(newUser.username)">
+      <label>Add member</label>
+      <input type="input" placeholder="Username" ng-model="newUser.username">
+      <input type="submit" class="btn btn-success" value="Add">
+    </form>
   </div>
 
 </div>

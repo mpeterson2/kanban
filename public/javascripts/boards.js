@@ -131,7 +131,12 @@ angular.module('boards', ['ui.bootstrap'])
   };
 
   $scope.addMember = function(username) {
-    boards.addMemberToStory(story, username);
+    if(username == undefined || username == '')
+      return;
+
+    boards.addMemberToStory(story, username).success(function() {
+      $scope.newUser.username = '';
+    });
   };
 
   $scope.removeMember = function(username) {
@@ -143,7 +148,12 @@ angular.module('boards', ['ui.bootstrap'])
   $scope.members = board.members;
 
   $scope.addMember = function(username) {
-    boards.addMember(board._id, username);
+    if(username == undefined || username == '')
+      return;
+
+    boards.addMember(board._id, username).success(function() {
+      $scope.newUser.username = '';
+    });
   };
 
   $scope.removeMember = function(username) {
@@ -243,7 +253,6 @@ angular.module('boards', ['ui.bootstrap'])
 
     removeMemberFromStory: function(story, username) {
       return $http.delete('/boards/' + $stateParams.boardId + '/story/' + story._id + '/member/' + username).success(function(member) {
-        console.log(member);
         var members = story.members;
         var newMembers = members.filter(function(m) {return m._id != member._id});
         angular.copy(newMembers, members);

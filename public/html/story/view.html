@@ -29,9 +29,12 @@
         <span ng-click="removeMember(member.username)" class="clickable" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
       </div>
 
-      <label>Add member</label>
-      <input type="text" placeholder="username" ng-model="newUser.username">
-      <button class="btn btn-success" ng-click="addMember(newUser.username)">Add</button>
+      <form ng-submit="addMember(newUser.username)">
+        <label>Add member</label>
+        <input type="text" placeholder="username" ng-model="newUser.username">
+        <input type="submit" class="btn btn-success" value="Add">
+      </form>
+
     </div>
   </div>
 

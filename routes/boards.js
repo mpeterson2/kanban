@@ -78,7 +78,7 @@ router.param('story', function(req, res, next, id) {
   if(!req.user)
     return notFound(res);
 
-  Story.findById(id).exec(function(err, story) {
+  Story.findById(id).populate('members').exec(function(err, story) {
     if(err)
       return next(err);
 
@@ -253,11 +253,18 @@ router.post('/:board/member/:user', isAuthenticated, function(req, res, next) {
   var board = req.board;
   var user = req.user;
 
-  board.members.push(user);
+  // Only add the new member if they don't already exist on the board.
+  var found = board.members.filter(function(m) {return m.username == user.username;});
 
-  board.save(function() {
-    res.json(user);
-  });
+  if(found.length == 0) {
+    board.members.push(user);
+
+    board.save(function() {
+      res.json(user);
+    });
+  }
+  else
+    res.status(400).json({error: 'This user is already part of this board'});
 });
 
 router.delete('/:board/member/:user', isAuthenticated, function(req, res, next) {
@@ -275,11 +282,17 @@ router.post('/:board/story/:story/member/:user', isAuthenticated, function(req, 
   var story = req.story;
   var user = req.user;
 
-  story.members.push(user);
+  var found = story.members.filter(function(m) {return m.username == user.username});
 
-  story.save(function(story) {
-    res.json(user);
-  });
+  if(found.length == 0) {
+    story.members.push(user);
+
+    story.save(function(story) {
+      res.json(user);
+    });
+  }
+  else
+    res.status(400).json({error: 'This user is already part of this story'});
 });
 
 router.delete('/:board/story/:story/member/:user', isAuthenticated, function(req, res, next) {
@@ -294,7 +307,7 @@ router.delete('/:board/story/:story/member/:user', isAuthenticated, function(req
 })
 
 notFound = function(res) {
-  return res.status(404).json({error: "Not Found"});
+  return res.status(404).json({error: 'Not Found'});
 };
 
 module.exports = router;
