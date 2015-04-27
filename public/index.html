@@ -2,7 +2,6 @@
 <head>
   <title>Kanban</title>
   <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/bower_components/octicons/octicons/octicons.css">
   <link rel="stylesheet" href="stylesheets/style.css">
 
   <script src="/bower_components/jquery/dist/jquery.min.js"></script>
@@ -56,13 +55,13 @@
             <li ng-show="user.username" tooltip="Log out" tooltip-placement="bottom" class="clickable">
               <a ng-click="logout()">
               <span class="icon-text">Log out</span>
-              <span class="octicon octicon-sign-out"></span></a>
+              <i class="glyphicon glyphicon-log-in"></i></a>
             </li>
 
             <li ng-hide="user.username" tooltip="Log in" tooltip-placement="bottom" class="clickable">
               <a href="/#/login">
                 <span class="icon-text">Log in</span>
-                <span class="octicon octicon-sign-in"></span></a>
+                <i class="glyphicon glyphicon-log-in"></i></a>
             </li>
 
           </ul>

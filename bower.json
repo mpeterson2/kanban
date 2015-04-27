@@ -18,7 +18,6 @@
     "angular": "~1.3.13",
     "bootstrap": "~3.3.2",
     "angular-ui-router": "~0.2.13",
-    "octicons": "~2.2.0",
     "angular-bootstrap": "~0.12.1",
     "angular-ui-sortable": "~0.13.3",
     "angular-md5": "~0.1.7"
