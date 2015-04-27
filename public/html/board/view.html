@@ -35,6 +35,10 @@
       <div ng-repeat="story in list">
         <li class="story-card item" ng-click="showStory(story)" model="story">
           <div>{{story.description}}</div>
+
+          <div class="pull-left">
+            <avatar ng-repeat="member in story.members" user="{{member}}"></avatar>
+          </div>
           <div class="pull-right badge"
             ng-class="{'badge-success': doneCount(story) == story.tasks.length,
             'badge-error': doneCount(story) == 0 && story.tasks.length != 0,

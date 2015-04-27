@@ -128,7 +128,15 @@ angular.module('boards', ['ui.bootstrap'])
     boards.addStory(sprint._id, $scope.story).success(function() {
       $modalInstance.close();
     });
-  }
+  };
+
+  $scope.addMember = function(username) {
+    boards.addMemberToStory(story, username);
+  };
+
+  $scope.removeMember = function(username) {
+    boards.removeMemberFromStory(story, username);
+  };
 })
 
 .controller('MemberManageCtrl', function($scope, $modalInstance, boards, board) {
@@ -222,13 +230,28 @@ angular.module('boards', ['ui.bootstrap'])
     removeMember: function(boardId, username) {
       return $http.delete('/boards/' + boardId + '/member/' + username).success(function(member) {
         var members = o.board.members;
-        var index = members.indexOf(member);
+        var newMembers = members.filter(function(m) {return m._id != member._id});
+        angular.copy(newMembers, members);
+      });
+    },
 
-        var newMembers = members.filter(function(m) {return m._id != member._id} );
+    addMemberToStory: function(story, username) {
+      return $http.post('/boards/' + $stateParams.boardId + '/story/' + story._id + '/member/' + username).success(function(member) {
+        story.members.push(member);
+      });
+    },
+
+    removeMemberFromStory: function(story, username) {
+      return $http.delete('/boards/' + $stateParams.boardId + '/story/' + story._id + '/member/' + username).success(function(member) {
+        console.log(member);
+        var members = story.members;
+        var newMembers = members.filter(function(m) {return m._id != member._id});
         angular.copy(newMembers, members);
       });
     }
+
   };
+
 
   return o;
 });

@@ -3,16 +3,36 @@
 </div>
 
 <div class="modal-body">
-  <div ng-repeat="task in story.tasks">
-    <input type="checkbox" ng-model="task.done" ng-click="toggleDone(task)">
-    <span>{{task.description}}</span>
-  </div>
+  <div class="row">
+    <div class="col-xs-6">
+      <h5>Tasks:</h5>
 
-  <div>
-    <form ng-submit="addTask()">
-    <input type="text" placeholder="New task" ng-model="newTask.description">
-    <input type="submit" class="btn btn-success" value="Add">
-    </form>
+      <div ng-repeat="task in story.tasks">
+        <input type="checkbox" ng-model="task.done" ng-click="toggleDone(task)">
+        <span>{{task.description}}</span>
+      </div>
+
+      <div>
+        <form ng-submit="addTask()">
+        <input type="text" placeholder="New task" ng-model="newTask.description">
+        <input type="submit" class="btn btn-success" value="Add">
+        </form>
+      </div>
+    </div>
+
+
+    <div class="col-xs-6">
+      <h5>Members:</h5>
+      <div ng-repeat="member in story.members">
+        <avatar user="{{member}}" tooltip=""></avatar>
+        <span tooltip="{{member.username}}">{{member.firstName}} {{member.lastName}}</span>
+        <span ng-click="removeMember(member.username)" class="clickable" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
+      </div>
+
+      <label>Add member</label>
+      <input type="text" placeholder="username" ng-model="newUser.username">
+      <button class="btn btn-success" ng-click="addMember(newUser.username)">Add</button>
+    </div>
   </div>
 
 </div>

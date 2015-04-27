@@ -7,6 +7,9 @@ var Story = mongoose.model('Story');
 var Task = mongoose.model('Task');
 var User = mongoose.model('User');
 
+var sprintDeepPopulate = 'todo.tasks, develop.tasks, test.tasks, done.tasks, ' +
+                         'todo.members, develop.members, test.members, done.members';
+
 var isAuthenticated = function(req, res, next) {
   if(req.isAuthenticated())
     next();
@@ -75,7 +78,7 @@ router.param('story', function(req, res, next, id) {
   if(!req.user)
     return notFound(res);
 
-  Story.findById(id).populate('members').exec(function(err, story) {
+  Story.findById(id).exec(function(err, story) {
     if(err)
       return next(err);
 
@@ -134,7 +137,7 @@ router.get('/:board/sprint/current', isAuthenticated, function(req, res, next) {
   var board = req.board;
 
   board.currentSprint(function(sprint) {
-    sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+    sprint.deepPopulate(sprintDeepPopulate, function(err, sprint) {
       if(err)
         return next(err);
 
@@ -148,7 +151,7 @@ router.get('/:board/sprint/current', isAuthenticated, function(req, res, next) {
 router.get('/:board/sprint/:sprint', isAuthenticated, function(req, res, next) {
   var sprint = req.sprint;
   var board = req.board;
-  sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+  sprint.deepPopulate(sprintDeepPopulate, function(err, sprint) {
     if(err)
       return next(err);
 
@@ -168,7 +171,7 @@ router.get('/:board/sprint/index/:index', isAuthenticated, function(req, res, ne
     return notFound(res);
 
   Sprint.findById(sprintId).exec(function(err, sprint) {
-    sprint.deepPopulate('todo.tasks, develop.tasks, test.tasks, done.tasks', function(err, sprint) {
+    sprint.deepPopulate(sprintDeepPopulate, function(err, sprint) {
       var s = sprint.toObject();
       s.index = board.sprintIndex(sprint._id);
 
@@ -265,7 +268,29 @@ router.delete('/:board/member/:user', isAuthenticated, function(req, res, next) 
 
   board.save(function() {
     res.json(user);
-  })
+  });
+});
+
+router.post('/:board/story/:story/member/:user', isAuthenticated, function(req, res, next) {
+  var story = req.story;
+  var user = req.user;
+
+  story.members.push(user);
+
+  story.save(function(story) {
+    res.json(user);
+  });
+});
+
+router.delete('/:board/story/:story/member/:user', isAuthenticated, function(req, res, next) {
+  var story = req.story;
+  var user = req.user;
+
+  story.members.pull(user);
+
+  story.save(function() {
+    res.json(user);
+  });
 })
 
 notFound = function(res) {
