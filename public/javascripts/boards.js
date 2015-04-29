@@ -37,6 +37,11 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
   };
 
   $scope.createBoard = function() {
+    $scope.formError = boards.validateBoard($scope.board);
+    if($scope.formError !== undefined) {
+      return;
+    }
+
     boards.create($scope.board).success(function(data) {
       $state.go('dashboard');
     });
@@ -104,6 +109,16 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     });
   };
 
+  $scope.showInfoManagement = function() {
+    $modal.open({
+      templateUrl: '/html/board/manage-info.html',
+      controller: 'InfoCtrl',
+      resolve: {
+        board: function() { return $scope.board; }
+      }
+    });
+  }
+
   $scope.removeStory = function(story) {
     confirmationDialog.create(
       function() {
@@ -112,7 +127,6 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
       'Are you sure you want to remove this story?'
     );
   };
-
 })
 
 .controller('MemberManageCtrl', function($scope, $modalInstance, boards, board, confirmationDialog) {
@@ -134,6 +148,22 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
   };
 })
 
+.controller('InfoCtrl', function($scope, $modalInstance, boards, board) {
+  $scope.name = board.name;
+  $scope.description = board.description;
+
+  $scope.save = function() {
+    $scope.formError = boards.validateBoard({name: $scope.name, description: $scope.description});
+    if($scope.formError !== undefined) {
+      return;
+    }
+
+    boards.updateInfo(board._id, $scope.name, $scope.description).success(function() {
+      $modalInstance.close();
+    });
+  }
+})
+
 .factory('boards', function($http, $stateParams, sprints) {
   var o = {
     board: {},
@@ -153,6 +183,20 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
 
     create: function(board) {
       return $http.put('/boards', board);
+    },
+
+    validateBoard: function(board) {
+      if(!board.name || board.name == '')
+        return {name: true, message: 'The title cannot be empty.'}
+      if(!board.description || board.description == '')
+        return {description: true, message: 'The description cannot be empty.'}
+    },
+
+    updateInfo: function(boardId, name, description) {
+      return $http.post('/boards/' + boardId + '/info', {name: name, description: description}).success(function() {
+        o.board.name = name;
+        o.board.description = description;
+      });
     },
 
     addMember: function(boardId, username) {

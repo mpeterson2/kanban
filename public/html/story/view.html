@@ -10,6 +10,7 @@
       <div ng-repeat="task in story.tasks">
         <input type="checkbox" ng-model="task.done" ng-click="toggleDone(task)">
         <span>{{task.description}}</span>
+        <i class="glyphicon glyphicon-remove glyphicon-error" ng-click="removeTask(task); $event.stopPropagation();" tooltip="Remove task"></i>
       </div>
 
       <div>
@@ -26,7 +27,7 @@
       <div ng-repeat="member in story.members">
         <avatar user="{{member}}" tooltip=""></avatar>
         <span tooltip="{{member.username}}">{{member.firstName}} {{member.lastName}}</span>
-        <span ng-click="removeMember(member.username)" class="clickable" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
+        <span ng-click="removeMember(member.username)" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
       </div>
 
       <form ng-submit="addMember(newUser.username)">

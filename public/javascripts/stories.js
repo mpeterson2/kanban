@@ -42,6 +42,10 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
     });
   };
 
+  $scope.removeTask = function(task) {
+    tasks.remove(board._id, story, task._id);
+  }
+
   $scope.toggleDone = function(task) {
     tasks.update(board._id, story, task);
   };

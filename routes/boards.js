@@ -90,6 +90,22 @@ router.param('story', function(req, res, next, id) {
   });
 });
 
+router.param('task', function(req, res, next, id) {
+  if(!req.user)
+    return notFound(res);
+
+  Task.findById(id).exec(function(err, task) {
+    if(err)
+      return next(err);
+
+    if(!task)
+      notFound(res);
+
+    req.task = task;
+    return next();
+  })
+});
+
 router.param('index', function(req, res, next, index) {
   req.index = index;
   return next();
@@ -111,6 +127,16 @@ router.param('user', function(req, res, next, username) {
 router.get('/:board', isAuthenticated, function(req, res, next) {
   var board = req.board;
   res.json(board);
+});
+
+router.post('/:board/info', isAuthenticated, function(req, res, next) {
+  var board = req.board;
+  board.name = req.body.name;
+  board.description = req.body.description;
+
+  board.save(function() {
+    res.json(board);
+  });
 });
 
 router.put('/:board/sprint', isAuthenticated, function(req, res, next) {
@@ -383,6 +409,14 @@ router.delete('/:board/sprint/:sprint/story/:story', isAuthenticated, function(r
     res.json(story);
   });
 
+});
+
+router.delete('/:board/story/:story/task/:task', isAuthenticated, function(req, res, next) {
+  var task = req.task;
+
+  task.remove(function(task) {
+    return res.json(task);
+  });
 });
 
 notFound = function(res) {

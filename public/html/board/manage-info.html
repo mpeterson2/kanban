@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h3 class="modal-title">Manage Info</h3>
+</div>
+
+<div class="modal-body">
+
+  <form ng-submit="save()">
+    <div class="form-group" ng-class="{'has-error': formError.name}">
+      <label class="control-label">Name:</label>
+      <input type="text" placeholder="Name of the board" ng-model="name" class="form-control">
+    </div>
+
+    <div class="form-group" ng-class="{'has-error': formError.description}">
+      <label class="control-label">Description:</label>
+      <textarea type="text" placeholder="Description of the board" ng-model="description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group has-error">
+      <label class="control-label" ng-show="formError.message">{{formError.message}}</label>
+    </div>
+  </form>
+
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="save()">Save</button>
+    <button class="btn btn-primary" ng-click="$close()">Close</button>
+</div>

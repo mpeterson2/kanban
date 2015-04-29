@@ -12,6 +12,14 @@ angular.module('tasks', [])
     update: function(boardId, story, task) {
       return $http.post('/boards/' + boardId + '/story/' + story._id + '/task/' + task._id, task);
     },
+
+    remove: function(boardId, story, taskId) {
+      return $http.delete('/boards/' + boardId + '/story/' + story._id + '/task/' + taskId)
+        .success(function() {
+          var newTasks = story.tasks.filter(function(t) {return t._id != taskId});
+          angular.copy(newTasks, story.tasks);
+        });
+    }
   }
 
   return o;
