@@ -33,18 +33,32 @@
 
     <ul ui-sortable="sortableOptions" class="sortable" ng-model="list" id="list-{{list.title}}">
       <div ng-repeat="story in list">
+
         <li class="story-card item" ng-click="showStory(story)" model="story">
-          <div>{{story.description}}</div>
 
-          <div class="pull-left">
-            <avatar ng-repeat="member in story.members" user="{{member}}" href=""></avatar>
+          <div class="row">
+            <div class="col-xs-10">
+              <div>{{story.description}}</div>
+            </div>
+
+            <div class="col-xs-2">
+              <i class="glyphicon glyphicon-remove glyphicon-error" ng-click="removeStory(story); $event.stopPropagation();"></i>
+            </div>
           </div>
-          <div class="pull-right badge"
-            ng-class="{'badge-success': doneCount(story) == story.tasks.length,
-            'badge-error': doneCount(story) == 0 && story.tasks.length != 0,
-            'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}">
 
-            {{doneCount(story)}}/{{story.tasks.length}}
+          <div class="row">
+            <div class="col-xs-10">
+              <avatar ng-repeat="member in story.members" user="{{member}}" href=""></avatar>
+            </div>
+
+            <div class="col-xs-2">
+              <div class="pull-right badge"
+                ng-class="{'badge-success': doneCount(story) == story.tasks.length,
+                'badge-error': doneCount(story) == 0 && story.tasks.length != 0,
+                'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}">
+                {{doneCount(story)}}/{{story.tasks.length}}
+              </div>
+            </div>
           </div>
         </li>
       </div>

@@ -348,7 +348,42 @@ router.delete('/:board/story/:story/member/:user', isAuthenticated, function(req
   story.save(function() {
     res.json(user);
   });
-})
+});
+
+router.delete('/:board/sprint/:sprint/story/:story', isAuthenticated, function(req, res, next) {
+  var boardr = req.board;
+  var sprint = req.sprint;
+  var story = req.story;
+
+  // Find the story in other sprints, if it exists, only remove it from this sprint, otherwise delete it entirely.
+  boardr.deepPopulate('sprints, sprints.todo, sprints.develop, sprints.test, sprints.done', function(err, board) {
+    var found = false;
+    board.sprints.some(function(s, curr, i) {
+      if(!s._id.equals(sprint._id)) {
+          if(s.containsStory(story)) {
+            found = true;
+            return false;
+          }
+        }
+    });
+
+    // It wasn't found, so delete it.
+    if(!found) {
+      story.remove();
+    }
+    // It wasn't found, so remove it from the sprint.
+    else {
+      sprint.todo.pull(story._id);
+      sprint.develop.pull(story._id);
+      sprint.test.pull(story._id);
+      sprint.done.pull(story._id);
+      sprint.save();
+    }
+
+    res.json(story);
+  });
+
+});
 
 notFound = function(res) {
   return res.status(404).json({error: 'Not Found'});

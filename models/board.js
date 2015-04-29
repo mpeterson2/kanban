@@ -8,7 +8,7 @@ var boardSchema = mongoose.Schema({
   sprints: [{type: mongoose.Schema.Types.ObjectId, ref: 'Sprint'}]
 });
 
-boardSchema.plugin(deepPopulate)
+boardSchema.plugin(deepPopulate);
 
 boardSchema.set('toObject', { getters: true });
 boardSchema.set('toJSON', { getters: true });

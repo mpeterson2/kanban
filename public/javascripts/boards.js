@@ -1,6 +1,6 @@
-angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories'])
+angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confirmation.dialog'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards, sprints, stories) {
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards, sprints, stories, confirmationDialog) {
   angular.copy({}, boards.board);
   $scope.board = boards.board;
   $scope.sprint = sprints.sprint;
@@ -13,7 +13,7 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories'])
 
     // If we have the current sprintIndex, get a sprint
     if($stateParams.sprintIndex) {
-      sprints.getByIndex($stateParams.boardId, $stateParams.sprintIndex);
+      sprints.getByIndex($stateParams.boardId, $stateParams.sprintIndex)
     }
 
     // Otherwise, get the currently dated sprint
@@ -102,11 +102,20 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories'])
         board: function() { return $scope.board; }
       }
     });
-  }
+  };
+
+  $scope.removeStory = function(story) {
+    confirmationDialog.create(
+      function() {
+        stories.remove($scope.board._id, $scope.sprint._id, story);
+      },
+      'Are you sure you want to remove this story?'
+    );
+  };
 
 })
 
-.controller('MemberManageCtrl', function($scope, $modalInstance, boards, board) {
+.controller('MemberManageCtrl', function($scope, $modalInstance, boards, board, confirmationDialog) {
   $scope.members = board.members;
 
   $scope.addMember = function(username) {
@@ -119,7 +128,9 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories'])
   };
 
   $scope.removeMember = function(username) {
-    boards.removeMember(board._id, username);
+    confirmationDialog.create(function() {
+      boards.removeMember(board._id, username)
+    }, 'Are you sure you want to remove ' + username + ' from this board?');
   };
 })
 
