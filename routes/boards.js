@@ -114,8 +114,20 @@ router.get('/:board', isAuthenticated, function(req, res, next) {
 });
 
 router.put('/:board/sprint', isAuthenticated, function(req, res, next) {
+  function clearDateTime(d) {
+    d.setMilliseconds(0);
+    d.setSeconds(0);
+    d.setMinutes(0);
+    d.setHours(0);
+  }
+
   var sprint = new Sprint(req.body);
   var board = req.board;
+
+  // Set the date's times to nothing and the endDate to just before the next day.
+  clearDateTime(sprint.endDate);
+  clearDateTime(sprint.startDate);
+  sprint.endDate.setSeconds(86399);
 
   if(req.body.transferStories) {
     var lastSprintId = board.sprints[board.sprints.length - 1];
