@@ -50,6 +50,22 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
     tasks.update(board._id, story, task);
   };
 
+  $scope.editTask = function(task) {
+    task.newDescription = task.description;
+    task.isEditing = true;
+  };
+
+  $scope.saveTaskEdits = function(task) {
+    task.description = task.newDescription;
+    tasks.update(board._id, story, task).success(function() {
+      task.isEditing = false;
+    });
+  }
+
+  $scope.stopEditingTask = function(task) {
+    task.isEditing = false;
+  };
+
   $scope.addMember = function(username) {
     if(username == undefined || username == '')
       return;

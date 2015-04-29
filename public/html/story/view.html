@@ -9,8 +9,17 @@
 
       <div ng-repeat="task in story.tasks">
         <input type="checkbox" ng-model="task.done" ng-click="toggleDone(task)">
-        <span>{{task.description}}</span>
-        <i class="glyphicon glyphicon-remove glyphicon-error" ng-click="removeTask(task); $event.stopPropagation();" tooltip="Remove task"></i>
+        <span ng-if="!task.isEditing">
+          <span>{{task.description}}</span>
+          <button class="btn-invisible" ng-click="editTask(task)"><i class="glyphicon glyphicon-edit" tooltip="Edit task"></i></button>
+          <button class="btn-invisible" ng-click="removeTask(task)"><i class="glyphicon glyphicon-remove glyphicon-error" tooltip="Remove task"></i></button>
+        </span>
+
+        <form ng-if="task.isEditing" ng-submit="saveTaskEdits(task)" class="inline">
+          <input type="text" ng-model="task.newDescription">
+          <button class="btn-invisible"><i class="glyphicon glyphicon-ok-circle glyphicon-success" tooltip="Save"></i></button>
+          <button class="btn-invisible" ng-click="stopEditingTask(task)"><i class="glyphicon glyphicon-remove-circle glyphicon-error" tooltip="Cancel"></i></button>
+        </form>
       </div>
 
       <div>
@@ -27,7 +36,7 @@
       <div ng-repeat="member in story.members">
         <avatar user="{{member}}" tooltip=""></avatar>
         <span tooltip="{{member.username}}">{{member.firstName}} {{member.lastName}}</span>
-        <span ng-click="removeMember(member.username)" tooltip="Remove member"><i class="glyphicon glyphicon-remove glyphicon-error"></i></span>
+        <i class="glyphicon glyphicon-remove glyphicon-error" ng-click="removeMember(member.username)" tooltip="Remove member"></i>
       </div>
 
       <form ng-submit="addMember(newUser.username)">
