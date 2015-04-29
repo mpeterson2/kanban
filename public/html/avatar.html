@@ -1,6 +1,6 @@
 <a href="{{href}}" ng-if="href">
   <img
-    ng-src="{{user.gravatar}}?size={{size}}"
+    ng-src="{{user.gravatar}}"
     tooltip-placement="bottom"
     tooltip="{{tooltip}}"
     class="avatar" />
@@ -8,7 +8,7 @@
 
 <img
     ng-if="!href"
-    ng-src="{{user.gravatar}}?size={{size}}"
+    ng-src="{{user.gravatar}}"
     tooltip-placement="bottom"
     tooltip="{{tooltip}}"
     class="avatar" />

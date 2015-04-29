@@ -11,7 +11,7 @@ angular.module('avatar', ['angular-md5', 'authentication'])
       var user = scope.$eval(newVal);
       if(user && user.email) {
         scope.user = user;
-        scope.user.gravatar = 'https://gravatar.com/avatar/' + md5.createHash(user.email);
+        scope.user.gravatar = 'https://gravatar.com/avatar/' + md5.createHash(user.email) + '?d=wavatar&size=' + scope.size;
 
         if(attrs.tooltip === undefined) {
           scope.tooltip = user.firstName + ' ' + user.lastName;
