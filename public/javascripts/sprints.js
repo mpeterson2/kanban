@@ -21,7 +21,7 @@ angular.module('sprints', [])
       return;
     }
 
-    sprints.addSprint(board._id, sprint).success(function(sprint) {
+    sprints.create(board._id, sprint).success(function(sprint) {
       var index = board.sprints.length;
       var url = '/#/boards/' + board._id + '/' + index;
       $state.go('board/sprint/view', {boardId: board._id, sprintIndex: index});
