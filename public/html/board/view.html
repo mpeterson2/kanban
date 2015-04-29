@@ -43,7 +43,7 @@
             </div>
 
             <div class="col-xs-2">
-              <i class="glyphicon glyphicon-remove glyphicon-error" ng-click="removeStory(story); $event.stopPropagation();"></i>
+              <i class="glyphicon glyphicon-remove glyphicon-error" ng-click="removeStory(story); $event.stopPropagation();" tooltip="Remove story"></i>
             </div>
           </div>
 
@@ -56,7 +56,8 @@
               <div class="pull-right badge"
                 ng-class="{'badge-success': doneCount(story) == story.tasks.length,
                 'badge-error': doneCount(story) == 0 && story.tasks.length != 0,
-                'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}">
+                'badge-warning': doneCount(story) != story.tasks.length && doneCount(story) != 0}"
+                tooltip="{{doneCount(story)}}/{{story.tasks.length}} tasks have been completed">
                 {{doneCount(story)}}/{{story.tasks.length}}
               </div>
             </div>
