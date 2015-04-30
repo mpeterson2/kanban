@@ -33,6 +33,24 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
 .controller('StoryViewController', function($scope, $modalInstance, stories, board, story, tasks) {
   $scope.story = story;
 
+  $scope.editStory = function() {
+    $scope.story.newDescription = $scope.story.description;
+    $scope.story.newPoints = $scope.story.points;
+    $scope.story.isEditing = true;
+  }
+
+  $scope.saveStoryEdits = function() {
+    $scope.story.description = $scope.story.newDescription;
+    $scope.story.points = $scope.story.newPoints;
+    stories.updateInfo(board._id, $scope.story).success(function() {
+      $scope.story.isEditing = false;
+    });
+  }
+
+  $scope.stopEditingStory = function() {
+    $scope.story.isEditing = false;
+  }
+
   $scope.addTask = function() {
     if(!$scope.newTask || !$scope.newTask.description)
       return;
@@ -99,6 +117,10 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
           angular.copy(newList, list);
         });
       });
+    },
+
+    updateInfo: function(boardId, story) {
+      return $http.post('/boards/' + boardId + '/story/' + story._id, {description: story.description, points: story.points});
     },
 
     move: function(boardId, sprintId, from, to, index, storyId) {

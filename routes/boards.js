@@ -134,7 +134,10 @@ router.post('/:board/info', isAuthenticated, function(req, res, next) {
   board.name = req.body.name;
   board.description = req.body.description;
 
-  board.save(function() {
+  board.save(function(err, board) {
+    if(err)
+      return next(err);
+
     res.json(board);
   });
 });
@@ -258,6 +261,19 @@ router.put('/:board/sprint/:sprint/story/', isAuthenticated, function(req, res, 
       res.json(story);
     });
   });
+});
+
+router.post('/:board/story/:story', isAuthenticated, function(req, res, next) {
+  var story = req.story;
+  story.description = req.body.description;
+  story.points = req.body.points;
+
+  story.save(function(err, story) {
+    if(err)
+      return next(err);
+
+    res.json(story);
+  })
 });
 
 router.put('/:board/story/:story/task', isAuthenticated, function(req, res, next) {
@@ -414,7 +430,10 @@ router.delete('/:board/sprint/:sprint/story/:story', isAuthenticated, function(r
 router.delete('/:board/story/:story/task/:task', isAuthenticated, function(req, res, next) {
   var task = req.task;
 
-  task.remove(function(task) {
+  task.remove(function(err, task) {
+    if(err)
+      return next(err);
+
     return res.json(task);
   });
 });

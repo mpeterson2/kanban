@@ -1,5 +1,22 @@
 <div class="modal-header">
-    <h4 class="modal-title">{{story.description}}<small ng-if="story.points"> {{story.points}} pts.</small></h4>
+    <h4 class="modal-title" ng-if="!story.isEditing">
+      {{story.description}}
+      <small>
+        {{story.points}} pts.
+        <button class="btn-invisible" ng-click="editStory()"><i class="glyphicon glyphicon-edit" tooltip="Edit description and points"></i></button>
+      </small>
+    </h4>
+
+    <form class="modal-title" ng-if="story.isEditing" ng-submit="saveStoryEdits()">
+      <h4>
+        <input ng-if="story.isEditing" type="textbox" ng-model="story.newDescription">
+      <small>
+        <input ng-if="story.isEditing" type="number" ng-model="story.newPoints">
+        <button class="btn-invisible"><i class="glyphicon glyphicon-ok-circle glyphicon-success" tooltip="Save"></i></button>
+        <button class="btn-invisible" ng-click="stopEditingStory()"><i class="glyphicon glyphicon-remove-circle glyphicon-error" tooltip="Cancel"></i></button>
+      </small>
+      </h4>
+    </form>
 </div>
 
 <div class="modal-body">
