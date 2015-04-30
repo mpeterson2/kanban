@@ -6,7 +6,7 @@ var minifyCSS = require('gulp-minify-css');
 var path = require('path');
 
 
-gulp.task('default', ['mongodb', 'less', 'start']);
+gulp.task('default', ['mongodb', 'less-watch', 'start']);
 
 gulp.task('start', function() {
   return nodemon({
@@ -21,13 +21,16 @@ gulp.task('mongodb', function() {
 });
 
 gulp.task('less', function() {
-  gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
 
   return gulp.src('./public/stylesheets/less/style.less')
     .pipe(less().on('error', swallowError))
     .pipe(minifyCSS())
     .pipe(gulp.dest('./public/stylesheets'))
     .on('error', function() {});
+});
+
+gulp.task('less-watch', function() {
+  return gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
 });
 
 function swallowError(e) {
