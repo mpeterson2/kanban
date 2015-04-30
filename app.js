@@ -11,8 +11,9 @@ require('./models/board');
 require('./models/sprint');
 require('./models/story');
 require('./models/task');
+
 // Connect to DB
-mongoose.connect(config.db.url);
+mongoose.connect(process.env.MONGOLAB_URI || config.db.url);
 
 var app = express();
 
