@@ -26,5 +26,8 @@
     "gulp-less": "^3.0.2",
     "gulp-minify-css": "^1.0.0",
     "gulp-nodemon": "^2.0.2"
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
