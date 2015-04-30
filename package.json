@@ -21,9 +21,7 @@
     "morgan": "~1.5.1",
     "passport": "^0.2.1",
     "passport-local": "^1.0.0",
-    "serve-favicon": "~2.2.0"
-  },
-  "devDependencies": {
+    "serve-favicon": "~2.2.0",
     "gulp": "^3.8.11",
     "gulp-less": "^3.0.2",
     "gulp-minify-css": "^1.0.0",
