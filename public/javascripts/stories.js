@@ -118,19 +118,11 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
     },
 
     addMember: function(boardId, story, username) {
-      return $http.post('/boards/' + boardId + '/story/' + story._id + '/member/' + username)
-        .success(function(member) {
-          story.members.push(member);
-        });
+      return $http.post('/boards/' + boardId + '/story/' + story._id + '/member/' + username);
     },
 
     removeMember: function(boardId, story, username) {
-      return $http.delete('/boards/' + boardId + '/story/' + story._id + '/member/' + username)
-        .success(function(member) {
-          var members = story.members;
-          var newMembers = members.filter(function(m) {return m._id != member._id});
-          angular.copy(newMembers, members);
-        });
+      return $http.delete('/boards/' + boardId + '/story/' + story._id + '/member/' + username);
     }
   };
 

@@ -133,18 +133,18 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     $scope.board.name = data.name;
   });
 
-  socket.on('board/user/add', function(data) {
+  socket.on('board/member/add', function(data) {
     $scope.board.members.push(data);
   });
 
-  socket.on('board/user/delete', function(data) {
-    var newMembers = $scope.board.members.filter(function(user) {
-      return user._id != data._id;
+  socket.on('board/member/delete', function(data) {
+    var newMembers = $scope.board.members.filter(function(member) {
+      return member._id != data._id;
     });
 
     angular.copy(newMembers, $scope.board.members);
 
-    // Remove the user from any sprints they were a part of.
+    // Remove the member from any sprints they were a part of.
     $scope.sprint.lists.forEach(function(list) {
       list.forEach(function(story) {
         var newStoryMembers = story.members.filter(function(m) {return m._id != data._id});
@@ -173,6 +173,19 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     $scope.sprint[data.to].splice(data.index, 0, data.story);
   });
 
+  socket.on('story/member/add', function(data) {
+    editStory(data.story._id, function(story) {
+      story.members.push(data.member);
+    });
+  });
+
+  socket.on('story/member/delete', function(data) {
+    editStory(data.story._id, function(story) {
+      var newMembers = story.members.filter(function(m) {return m._id != data.member._id});
+      angular.copy(newMembers, story.members);
+    });
+  })
+
   socket.on('story/delete', function(data) {
     editStory(data._id, function(story, list, storyIndex) {
       list.splice(storyIndex, 1);
@@ -180,7 +193,7 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
   });
 
   socket.on('task/new', function(data) {
-    editStory(function(story) {
+    editStory(data.story._id, function(story) {
       story.tasks.push(data.task)
     });
   });
