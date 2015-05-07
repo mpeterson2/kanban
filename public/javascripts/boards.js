@@ -142,6 +142,12 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     $scope.sprint[data.to].splice(data.index, 0, data.story);
   });
 
+  socket.on('story/delete', function(data) {
+    editStory(data._id, function(story, list, storyIndex) {
+      list.splice(storyIndex, 1);
+    });
+  });
+
   socket.on('task/new', function(data) {
     editStory(function(story) {
       story.tasks.push(data.task)

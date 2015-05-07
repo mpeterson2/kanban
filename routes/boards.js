@@ -431,6 +431,7 @@ router.delete('/:board/sprint/:sprint/story/:story', isAuthenticated, function(r
       sprint.save();
     }
 
+    io.to(req.board._id + '/' + req.sprint._id).emit('story/delete', story);
     res.json(story);
   });
 

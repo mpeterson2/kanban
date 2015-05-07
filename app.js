@@ -51,7 +51,7 @@ var server = app.listen(port);
 var io = require('socket.io').listen(server);
 
 // Setup routes
-require('./routes/message-socket')(io);
+require('./routes/socket')(io);
 var routes = require('./routes/authentication')(passport);
 var boards = require('./routes/boards')(io);
 var users = require('./routes/users');
