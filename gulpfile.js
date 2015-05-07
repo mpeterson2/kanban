@@ -33,10 +33,6 @@ gulp.task('less-watch', function() {
   return gulp.watch('./public/stylesheets/less/**/*.less', ['less']);
 });
 
-gulp.task('push', function() {
-  return childProcess.exec('git push && git push origin master');
-})
-
 function swallowError(e) {
   console.log(e);
   this.emit('end');
