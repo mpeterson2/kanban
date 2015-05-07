@@ -105,15 +105,7 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
     },
 
     remove: function(boardId, sprintId, story) {
-      return $http.delete('/boards/' + boardId + '/sprint/' + sprintId + '/story/' + story._id).success(function(data) {
-        sprints.sprint.lists.forEach(function(list) {
-          var newList = list.filter(function(story) {
-            return story._id != data._id;
-          });
-
-          angular.copy(newList, list);
-        });
-      });
+      return $http.delete('/boards/' + boardId + '/sprint/' + sprintId + '/story/' + story._id);
     },
 
     updateInfo: function(boardId, story) {
