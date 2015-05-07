@@ -275,6 +275,7 @@ router.post('/:board/story/:story', isAuthenticated, function(req, res, next) {
     if(err)
       return next(err);
 
+    io.to(req.board._id).emit('story/edit', story);
     res.json(story);
   })
 });
@@ -335,6 +336,7 @@ router.post('/:board/member/:user', isAuthenticated, function(req, res, next) {
     board.members.push(user);
 
     board.save(function() {
+      io.to(board._id).emit('board/user/add', user);
       res.json(user);
     });
   }
@@ -366,6 +368,7 @@ router.delete('/:board/member/:user', isAuthenticated, function(req, res, next) 
     });
 
     board.save(function() {
+      io.to(board._id).emit('board/user/delete', user);
       res.json(user);
     });
   });

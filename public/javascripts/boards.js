@@ -133,8 +133,34 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     $scope.board.name = data.name;
   });
 
+  socket.on('board/user/add', function(data) {
+    $scope.board.members.push(data);
+  });
+
+  socket.on('board/user/delete', function(data) {
+    var newMembers = $scope.board.members.filter(function(user) {
+      return user._id != data._id;
+    });
+
+    angular.copy(newMembers, $scope.board.members);
+
+    // Remove the user from any sprints they were a part of.
+    $scope.sprint.lists.forEach(function(list) {
+      list.forEach(function(story) {
+        var newStoryMembers = story.members.filter(function(m) {return m._id != data._id});
+        story.members = newStoryMembers;
+      });
+    });
+  });
+
   socket.on('story/new', function(data) {
     $scope.sprint.todo.push(data);
+  });
+
+  socket.on('story/edit', function(data) {
+    editStory(data._id, function(story) {
+      angular.copy(data, story);
+    });
   });
 
   socket.on('story/move', function(data) {
@@ -274,27 +300,11 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     },
 
     addMember: function(boardId, username) {
-      return $http.post('/boards/' + boardId + '/member/' + username).success(function(member) {
-        o.board.members.push(member);
-      });
+      return $http.post('/boards/' + boardId + '/member/' + username);
     },
 
     removeMember: function(boardId, username) {
-      return $http.delete('/boards/' + boardId + '/member/' + username).success(function(member) {
-        var members = o.board.members;
-        var newMembers = members.filter(function(m) {return m._id != member._id});
-        angular.copy(newMembers, members);
-
-        function removeUser(story) {
-          var newStoryMembers = story.members.filter(function(m) {return m._id != member._id});
-          story.members = newStoryMembers;
-        }
-
-        sprints.sprint.todo.forEach(removeUser);
-        sprints.sprint.develop.forEach(removeUser);
-        sprints.sprint.test.forEach(removeUser);
-        sprints.sprint.done.forEach(removeUser);
-      });
+      return $http.delete('/boards/' + boardId + '/member/' + username);
     }
   };
 
