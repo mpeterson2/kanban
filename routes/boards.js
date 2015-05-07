@@ -139,6 +139,7 @@ router.post('/:board/info', isAuthenticated, function(req, res, next) {
     if(err)
       return next(err);
 
+    io.to(req.board._id).emit('board/info', {name: board.name, description: board.description});
     res.json(board);
   });
 });

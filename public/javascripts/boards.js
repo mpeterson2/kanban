@@ -128,6 +128,11 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     );
   };
 
+  socket.on('board/info', function(data) {
+    $scope.board.description = data.description;
+    $scope.board.name = data.name;
+  });
+
   socket.on('story/new', function(data) {
     $scope.sprint.todo.push(data);
   });
@@ -265,10 +270,7 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     },
 
     updateInfo: function(boardId, name, description) {
-      return $http.post('/boards/' + boardId + '/info', {name: name, description: description}).success(function() {
-        o.board.name = name;
-        o.board.description = description;
-      });
+      return $http.post('/boards/' + boardId + '/info', {name: name, description: description});
     },
 
     addMember: function(boardId, username) {
