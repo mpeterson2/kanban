@@ -3,8 +3,8 @@ angular.module('app', [
   'ui.bootstrap',
   'ui.sortable',
   'angular-md5',
-  'messages',
   'btford.socket-io',
+  'socket',
   'authentication',
   'dashboard',
   'boards',
@@ -15,7 +15,7 @@ angular.module('app', [
   'loading'
 ])
 
-.controller('main', function($scope, $state, auth, messages) {
+.controller('main', function($scope, $state, auth) {
   $scope.user = auth.user;
 
   auth.getUser()

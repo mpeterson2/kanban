@@ -30,7 +30,7 @@ angular.module('sprints', [])
   };
 })
 
-.factory('sprints', function($http, messages) {
+.factory('sprints', function($http, socket) {
   var o = {
     sprint: {},
 
@@ -58,7 +58,7 @@ angular.module('sprints', [])
 
     setSprint: function(boardId, data) {
         angular.copy(data, o.sprint);
-        messages.emit('connect-to', {boardId: boardId, sprintId: data._id});
+        socket.emit('connect-to', {boardId: boardId, sprintId: data._id});
 
         var todo = o.sprint.todo;
         var develop = o.sprint.develop;

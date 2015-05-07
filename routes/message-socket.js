@@ -5,7 +5,7 @@ module.exports = function(io) {
       var sprintRoom = data.boardId + '/' + data.sprintId;
 
       if(socket.lastBoardRoom) {
-        socket.leave(socket.lastRoom);
+        socket.leave(socket.lastBoardRoom);
       }
 
       if(socket.lastSprintRoom) {

@@ -1,6 +1,6 @@
 angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confirmation.dialog'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, messages, boards, sprints, stories, confirmationDialog) {
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, socket, boards, sprints, stories, confirmationDialog) {
   angular.copy({}, boards.board);
   $scope.board = boards.board;
   $scope.sprint = sprints.sprint;
@@ -128,53 +128,48 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     );
   };
 
+  socket.on('story/move', function(data) {
+    //  delete story
+    editStory(data.story._id, function(story, list, storyIndex) {
+      list.splice(storyIndex, 1);
+    });
 
-  messages.on('task/new', function(data) {
-    console.log(data);
-    var sprint = $scope.sprint;
+    // recreate story
+    $scope.sprint[data.to].splice(data.index, 0, data.story);
+  });
 
-    sprint.lists.some(function(list) {
-      var ret = false;
-      list.some(function(story) {
-        if(data.story._id == story._id) {
-          story.tasks.push(data.task);
-          console.log('found it.');
-          ret = true;
-        }
-
-        return ret;
-      });
-
-      return ret;
+  socket.on('task/new', function(data) {
+    editStory(function(story) {
+      story.tasks.push(data.task)
     });
   });
 
-  messages.on('task/edit', function(data) {
-    var sprint = $scope.sprint;
-    sprint.lists.some(function(list) {
-      var ret = false;
-      list.some(function(story) {
-        story.tasks.some(function(task) {
-          if(task._id == data._id) {
-            angular.copy(data, task);
-            ret = true;
-          }
-          return ret;
-        });
-
-        return ret;
-      });
-
-      return ret;
+  socket.on('task/edit', function(data) {
+    editTask(data._id, function(task) {
+      angular.copy(data, task);
     });
   });
 
-  messages.on('task/delete', function(data) {
-    var sprint = $scope.sprint;
+  socket.on('task/delete', function(data) {
     editTask(data._id, function(task, story, taskIndex) {
       story.tasks.splice(taskIndex, 1);
     });
   });
+
+  function editStory(id, cb) {
+    $scope.sprint.lists.some(function(list) {
+      var ret = false;
+      list.some(function(story, storyIndex) {
+        if(story._id == id) {
+          cb(story, list, storyIndex);
+          ret = true;
+        }
+        return ret;
+      });
+
+      return ret;
+    });
+  }
 
   function editTask(id, cb) {
     $scope.sprint.lists.some(function(list) {
