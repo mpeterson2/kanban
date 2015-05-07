@@ -1,6 +1,6 @@
 angular.module('stories', ['users', 'sprints', 'tasks'])
 
-.controller('StoryCreateCtrl', function($scope, $modalInstance, users, stories, board, sprint) {
+.controller('StoryCreateCtrl', function($scope, $modalInstance, messages, users, stories, board, sprint) {
   $scope.story = {members: [], description: '', points: 1};
 
   $scope.createStory = function() {
@@ -98,13 +98,10 @@ angular.module('stories', ['users', 'sprints', 'tasks'])
   };
 })
 
-.factory('stories', function($http, sprints) {
+.factory('stories', function($http, sprints, messages) {
   var o = {
     create: function(boardId, sprintId, story) {
-      return $http.put('/boards/' + boardId + '/sprint/' + sprintId + '/story', story)
-        .success(function(data) {
-          sprints.sprint.lists[0].push(data);
-        });
+      return $http.put('/boards/' + boardId + '/sprint/' + sprintId + '/story', story);
     },
 
     remove: function(boardId, sprintId, story) {

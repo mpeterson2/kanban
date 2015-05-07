@@ -30,7 +30,7 @@ angular.module('sprints', [])
   };
 })
 
-.factory('sprints', function($http) {
+.factory('sprints', function($http, messages) {
   var o = {
     sprint: {},
 
@@ -39,19 +39,26 @@ angular.module('sprints', [])
     },
 
     get: function(boardId, sprintId) {
-      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(o.setSprint);
+      return $http.get('/boards/' + boardId + '/sprint/' + sprintId).success(function(data) {
+        o.setSprint(boardId, data);
+      });
     },
 
     getCurrent: function(boardId) {
-      return $http.get('/boards/' + boardId + '/sprint/current').success(o.setSprint);
+      return $http.get('/boards/' + boardId + '/sprint/current').success(function(data) {
+        o.setSprint(boardId, data);
+      });
     },
 
     getByIndex: function(boardId, index) {
-      return $http.get('/boards/' + boardId + '/sprint/index/' + index).success(o.setSprint);
+      return $http.get('/boards/' + boardId + '/sprint/index/' + index).success(function(data) {
+        o.setSprint(boardId, data);
+      });
     },
 
-    setSprint: function(data) {
+    setSprint: function(boardId, data) {
         angular.copy(data, o.sprint);
+        messages.emit('connect-to', {boardId: boardId, sprintId: data._id});
 
         var todo = o.sprint.todo;
         var develop = o.sprint.develop;

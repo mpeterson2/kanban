@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var app = express();
 
 var config = require('./config');
 var mongoose = require('mongoose');
@@ -14,12 +15,6 @@ require('./models/task');
 
 // Connect to DB
 mongoose.connect(process.env.MONGOLAB_URI || config.db.url);
-
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -50,8 +45,15 @@ app.use(passport.session());
 var initPassport = require('./passport/init');
 initPassport(passport);
 
+// Start the server
+var port = process.env.PORT || 3000;
+var server = app.listen(port);
+var io = require('socket.io').listen(server);
+
+// Setup routes
+require('./routes/message-socket')(io);
 var routes = require('./routes/authentication')(passport);
-var boards = require('./routes/boards');
+var boards = require('./routes/boards')(io);
 var users = require('./routes/users');
 app.use('/', routes);
 app.use('/boards', boards);

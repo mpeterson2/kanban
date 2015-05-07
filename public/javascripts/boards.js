@@ -1,6 +1,6 @@
 angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confirmation.dialog'])
 
-.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, boards, sprints, stories, confirmationDialog) {
+.controller('BoardCtrl', function($scope, $state, $stateParams, $modal, messages, boards, sprints, stories, confirmationDialog) {
   angular.copy({}, boards.board);
   $scope.board = boards.board;
   $scope.sprint = sprints.sprint;
@@ -127,6 +127,73 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
       'Are you sure you want to remove this story?'
     );
   };
+
+
+  messages.on('task/new', function(data) {
+    console.log(data);
+    var sprint = $scope.sprint;
+
+    sprint.lists.some(function(list) {
+      var ret = false;
+      list.some(function(story) {
+        if(data.story._id == story._id) {
+          story.tasks.push(data.task);
+          console.log('found it.');
+          ret = true;
+        }
+
+        return ret;
+      });
+
+      return ret;
+    });
+  });
+
+  messages.on('task/edit', function(data) {
+    var sprint = $scope.sprint;
+    sprint.lists.some(function(list) {
+      var ret = false;
+      list.some(function(story) {
+        story.tasks.some(function(task) {
+          if(task._id == data._id) {
+            angular.copy(data, task);
+            ret = true;
+          }
+          return ret;
+        });
+
+        return ret;
+      });
+
+      return ret;
+    });
+  });
+
+  messages.on('task/delete', function(data) {
+    var sprint = $scope.sprint;
+    editTask(data._id, function(task, story, taskIndex) {
+      story.tasks.splice(taskIndex, 1);
+    });
+  });
+
+  function editTask(id, cb) {
+    $scope.sprint.lists.some(function(list) {
+      var ret = false;
+      list.some(function(story) {
+        story.tasks.some(function(task, taskIndex) {
+          if(task._id == id) {
+            cb(task, story, taskIndex);
+            ret = true;
+          }
+          return ret;
+        });
+
+        return ret;
+      });
+
+      return ret;
+    });
+  }
 })
 
 .controller('MemberManageCtrl', function($scope, $modalInstance, boards, board, confirmationDialog) {
@@ -223,7 +290,6 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
       });
     }
   };
-
 
   return o;
 });

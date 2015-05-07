@@ -10,7 +10,7 @@ gulp.task('default', ['mongodb', 'less-watch', 'start']);
 
 gulp.task('start', function() {
   return nodemon({
-    script: './bin/www',
+    script: './app',
     ignore: ['public', 'test', 'gulpfile.js'],
     port: 3000
   });

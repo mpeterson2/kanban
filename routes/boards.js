@@ -7,6 +7,7 @@ var Story = mongoose.model('Story');
 var Task = mongoose.model('Task');
 var User = mongoose.model('User');
 
+var io;
 var sprintDeepPopulate = 'todo.tasks, develop.tasks, test.tasks, done.tasks, ' +
                          'todo.members, develop.members, test.members, done.members';
 
@@ -258,6 +259,7 @@ router.put('/:board/sprint/:sprint/story/', isAuthenticated, function(req, res, 
         return next(err);
       }
 
+      io.to(req.board._id + '/' + req.sprint._id).emit('story/new', story);
       res.json(story);
     });
   });
@@ -283,19 +285,25 @@ router.put('/:board/story/:story/task', isAuthenticated, function(req, res, next
   story.tasks.push(task);
   story.save();
 
-  task.save(function(err, story) {
+  task.save(function(err, task) {
     if(err)
       return next(err);
 
-    res.json(story);
+    io.to(req.board._id).emit('task/new', {story: story, task: task});
+    res.json(task);
   });
 });
 
 router.post('/:board/story/:story/task/:task', isAuthenticated, function(req, res, next) {
-  Task.findByIdAndUpdate(req.params.task, req.body, function(err, task) {
+  var task = req.task;
+  task.description = req.body.description;
+  task.done = req.body.done;
+
+  task.save(function(err, doc) {
     if(err)
       return next(err);
 
+    io.to(req.board._id).emit('task/edit', task);
     res.json(task);
   });
 });
@@ -310,6 +318,7 @@ router.post('/:board/sprint/:sprint/story/:story/move', isAuthenticated, functio
   sprint[from].pull(story._id);
   sprint[to].splice(index, 0, story._id);
   sprint.save();
+  io.to(req.board._id + '/' + req.sprint._id).emit('story/move', {from: from, to: to, index: index, story: story})
 
   res.json({});
 });
@@ -434,6 +443,7 @@ router.delete('/:board/story/:story/task/:task', isAuthenticated, function(req, 
     if(err)
       return next(err);
 
+    io.to(req.board._id).emit('task/delete', task);
     return res.json(task);
   });
 });
@@ -442,4 +452,7 @@ notFound = function(res) {
   return res.status(404).json({error: 'Not Found'});
 };
 
-module.exports = router;
+module.exports = function(sockets) {
+  io = sockets;
+  return router;
+}

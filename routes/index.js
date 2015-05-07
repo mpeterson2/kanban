@@ -5,8 +5,7 @@ var router = express.Router();
 module.exports = function(passport) {
 
 	router.get('/', function(req, res) {
-    	// Display the Login page with any flash message, if any
-		res.render('index', { message: req.flash('message') });
+		res.render('index');
 	});
 
   router.post('/login', function(req, res, next) {
