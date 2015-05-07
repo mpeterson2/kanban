@@ -33,7 +33,7 @@ app.use(expressSession({secret: 'mySecretKey',
                         saveUninitialized: false,
                         resave: false,
                         cookie: {
-                            maxAge: new Date(Date.now() + 3600000)
+                            maxAge: 31*24*60*60*1000 // 31 days
                         },
                         store: new MongoStore({mongooseConnection: mongoose.connection})
                     }));
