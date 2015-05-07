@@ -4,18 +4,23 @@ module.exports = function(io) {
       var boardRoom = data.boardId;
       var sprintRoom = data.boardId + '/' + data.sprintId;
 
-      if(socket.lastBoardRoom) {
+      if(socket.lastBoardRoom && socket.lastBoardRoom != data.boardId) {
         socket.leave(socket.lastBoardRoom);
       }
 
-      if(socket.lastSprintRoom) {
+      if(socket.lastSprintRoom && socket.lastSprintRoom != data.sprintId) {
         socket.leave(socket.lastSprintRoom);
       }
 
-      socket.lastBoardRoom = boardRoom;
-      socket.lastSprintRoom = sprintRoom;
-      socket.join(boardRoom);
-      socket.join(sprintRoom);
+      if(socket.lastBoardRoom != data.boardId) {
+        socket.lastBoardRoom = boardRoom;
+        socket.join(boardRoom);
+      }
+
+      if(socket.lastSprintRoom != data.sprintId) {
+        socket.lastSprintRoom = sprintRoom;
+        socket.join(sprintRoom);
+      }
     });
   });
 }

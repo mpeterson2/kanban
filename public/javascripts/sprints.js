@@ -22,9 +22,6 @@ angular.module('sprints', [])
     }
 
     sprints.create(board._id, sprint).success(function(sprint) {
-      var index = board.sprints.length;
-      var url = '/#/boards/' + board._id + '/' + index;
-      $state.go('board/sprint/view', {boardId: board._id, sprintIndex: index});
       $modalInstance.close();
     });
   };

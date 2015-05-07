@@ -234,6 +234,9 @@ function saveSprint(res, board, sprint) {
       if(err)
         return next(err);
 
+      console.log(board._id);
+      console.log(sprint._id);
+      io.to(board._id).emit('sprint/new', sprint._id);
       return res.json(spr);
     });
   });

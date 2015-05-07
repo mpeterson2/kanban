@@ -153,6 +153,11 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     });
   });
 
+  socket.on('sprint/new', function(data) {
+    console.log(data);
+    $scope.board.sprints.push(data);
+  });
+
   socket.on('story/new', function(data) {
     $scope.sprint.todo.push(data);
   });
