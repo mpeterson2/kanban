@@ -128,6 +128,10 @@ angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confir
     );
   };
 
+  socket.on('story/new', function(data) {
+    $scope.sprint.todo.push(data);
+  });
+
   socket.on('story/move', function(data) {
     //  delete story
     editStory(data.story._id, function(story, list, storyIndex) {
