@@ -323,9 +323,11 @@ router.post('/:board/sprint/:sprint/story/:story/move', isAuthenticated, functio
   sprint[from].pull(story._id);
   sprint[to].splice(index, 0, story._id);
   sprint.save();
-  io.to(req.board._id + '/' + req.sprint._id).emit('story/move', {from: from, to: to, index: index, story: story})
 
-  res.json({});
+  story.populate('tasks', function(err, story) {
+    io.to(req.board._id + '/' + req.sprint._id).emit('story/move', {from: from, to: to, index: index, story: story})
+    res.json(story);
+  });
 });
 
 router.post('/:board/member/:user', isAuthenticated, function(req, res, next) {
