@@ -19,7 +19,6 @@
     "gulp-less": "^3.0.2",
     "gulp-minify-css": "^1.0.0",
     "gulp-nodemon": "^2.0.2",
-    "jade": "~1.9.1",
     "mongoose": "^4.0.1",
     "mongoose-deep-populate": "^1.0.1",
     "morgan": "~1.5.1",
