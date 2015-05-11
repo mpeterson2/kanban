@@ -1,6 +1,7 @@
 angular.module('boards', ['ui.bootstrap', 'users', 'sprints', 'stories', 'confirmation.dialog'])
 
 .controller('BoardCtrl', function($scope, $state, $stateParams, $modal, socket, boards, sprints, stories, confirmationDialog) {
+  socket.removeAllListeners();
   angular.copy({}, boards.board);
   $scope.board = boards.board;
   $scope.sprint = sprints.sprint;
