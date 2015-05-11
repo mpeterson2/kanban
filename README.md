@@ -12,6 +12,7 @@ A kanban board is basically an advanced to do list, where you have sprints, stor
 
 - Install [NodeJS](https://nodejs.org/)
 - Install [MongoDB](https://www.mongodb.org/downloads)
+- Install [Gulp](http://gulpjs.com/) with `npm install -g gulp`
 - Clone this repository
 - Run npm install in the repository's directory
 
